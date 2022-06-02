@@ -4,10 +4,11 @@
 cmake_minimum_required (VERSION 3.8)
 
 # Name of the solution
-# TODO: Rename solution
-project ("solution-name")
+project ("2dphysicsengine")
 
 # Include sub-projects.
-# TODO: Rename project
-set(EXECUTABLE_CUSTOM_NAME "project-name")
-add_subdirectory ("project-name")
+set(EXECUTABLE_CUSTOM_NAME "2DPhysicsEngine")
+add_subdirectory ("2DPhysicsEngine")
+
+set(EXECUTABLE_CUSTOM_NAME "Vector")
+add_subdirectory ("Vector")
