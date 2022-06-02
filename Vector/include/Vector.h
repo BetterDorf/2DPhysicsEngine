@@ -9,6 +9,7 @@ public:
 
 	Vector(const float x, const float y) : X(x), Y(y) {}
 
+	[[nodiscard]] float SqrtMagnitude() const;
 	[[nodiscard]] float Magnitude() const;
 	[[nodiscard]] Vector Normalize() const;
 

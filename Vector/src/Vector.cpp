@@ -3,9 +3,14 @@
 
 #include <string>
 
+float Vector::SqrtMagnitude() const
+{
+	return X * X + Y * Y;
+}
+
 float Vector::Magnitude() const
 {
-	return sqrt(X * X + Y * Y);
+	return sqrt(SqrtMagnitude());
 }
 
 Vector Vector::Normalize() const
