@@ -10,7 +10,7 @@ float Vector::SqrtMagnitude() const
 
 float Vector::Magnitude() const
 {
-	return sqrt(SqrtMagnitude());
+	return std::sqrt(SqrtMagnitude());
 }
 
 Vector Vector::Normalize() const
