@@ -1,16 +1,24 @@
 #include <iostream>
-#include  "Rigibody.h"
+#include "Entity.h"
 
 int main()
 {
-	constexpr int totalIters = 5000;
 	auto a = Rigibody(0.0, 0.0);
     a.velocity = Vector(8.0, -9.81);
 
-    for (int iters = 0; iters < totalIters; iters++)
+    Entity e(std::make_unique<Rigibody>(a), std::make_unique<sf::CircleShape>(5));
+
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "window");
+
+    while (window.isOpen())
     {
-        a.Update(1.0 / 60.0);
-        std::cout << a.position.ToString() << std::endl;
+        window.clear();
+
+        e.GetRigibody().AddForceImpulse(Vector(0.0, -9.81));
+        e.PhysicUpdate(1.0 / 60.0);
+        window.draw(e);
+
+        window.display();
     }
 
     std::cout << "Hello World !\n";
