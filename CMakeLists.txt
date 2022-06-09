@@ -12,3 +12,6 @@ add_subdirectory ("2DPhysicsEngine")
 
 set(EXECUTABLE_CUSTOM_NAME "Vector")
 add_subdirectory ("Vector")
+
+set(EXECUTABLE_CUSTOM_NAME "Sfml")
+add_subdirectory ("Sfml")

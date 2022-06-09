@@ -5,7 +5,7 @@ class Vector
 {
 public:
 	Vector() = default;
-	Vector(const double x, const double y) : X(x), Y(y) {}
+	explicit Vector(const double x, const double y) : X(x), Y(y) {}
 
 	double X = 0.0;
 	double Y = 0.0;
@@ -39,8 +39,6 @@ public:
 
 	[[nodiscard]] Vector operator/(double scalar) const;
 	Vector& operator/=(double scalar);
-
-	Vector& operator = (Vector other);
 
 	[[nodiscard]] bool operator==(const Vector&) const;
 };

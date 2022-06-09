@@ -14,7 +14,7 @@ double Vector::Distance(const Vector a, const Vector b)
 	return (a - b).Magnitude();
 }
 
-void Vector::Set(double x, double y)
+void Vector::Set(const double x, const double y)
 {
 	X = x;
 	Y = y;
@@ -108,14 +108,6 @@ Vector Vector::operator/(const double scalar) const
 Vector& Vector::operator/=(const double scalar)
 {
 	*this = *this / scalar;
-	return *this;
-}
-
-Vector& Vector::operator=(const Vector other)
-{
-	X = other.X;
-	Y = other.Y;
-
 	return *this;
 }
 
