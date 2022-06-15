@@ -7,5 +7,10 @@ void Rigibody::Update(const double time)
 
 void Rigibody::AddForceImpulse(const Vector force)
 {
-	velocity += force;
+	this->velocity += force;
+}
+
+void Rigibody::AddForceContinuous(const Vector force, const double time)
+{
+	this->velocity += force * time;
 }

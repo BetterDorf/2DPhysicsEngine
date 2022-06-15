@@ -18,4 +18,5 @@ public:
 	void Update(double time);
 
 	void AddForceImpulse(Vector force);
+	void AddForceContinuous(Vector force, double time);
 };

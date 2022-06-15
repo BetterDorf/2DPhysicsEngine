@@ -2,20 +2,21 @@
 #include <SFML/Graphics.hpp>
 #include "Rigibody.h"
 
-class Entity :public sf::Drawable, public sf::Transformable
+class Entity final :public sf::Drawable, public sf::Transformable
 {
 public:
 	Entity(std::unique_ptr<Rigibody>, std::unique_ptr<sf::Drawable>);
 
-	[[nodiscard]] Rigibody GetRigibody() const { return  *rbPtr; }
+	[[nodiscard]] Rigibody& GetRigibody() const { return *rbPtr; }
 
 	bool flaggedForRemoval = false;
 
-	void PhysicUpdate(double timeElapsed);
+	void PhysicUpdate(double timeElapsed) const;
+	void UpdateGraphicsPosition(Vector cameraPos);
+
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 private:
-	void UpdateShapePosition();
 
 	std::unique_ptr<Rigibody> rbPtr;
 	std::unique_ptr<sf::Drawable> visualPtr;
