@@ -1,17 +1,21 @@
 #include <iostream>
 #include "Entity.h"
+#include "PhysicalWorld.h"
 
 int main()
 {
-    Rigibody rb(Vector(5.0, -4.0), Vector(3.0, 7.0));
+	std::unique_ptr<Rigibody> rb;
+	rb = std::make_unique<Rigibody>(Vector(5.0, -4.0), Vector(0.3, 0.7));
+	std::unique_ptr<Rigibody> rb2;
+	rb2 = std::make_unique<Rigibody>(Vector(0.0, -10.0), Vector(0.3, 0.7));
 
-    Entity e(std::make_unique<Rigibody>(rb), std::make_unique<sf::CircleShape>(100));
-    Entity e2(std::make_unique<Rigibody>(rb), std::make_unique<sf::CircleShape>(50));
-    e2.GetRigibody().position = Vector(0.0,0.0);
+
+	Entity e(std::move(rb), std::make_unique<sf::CircleShape>(100));
+    Entity e2(std::move(rb2), std::make_unique<sf::CircleShape>(50));
 
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "window");
 
-    double timeStep = 1.0 / 600.0;
+    double timeStep = 1.0 / 60.0;
     Vector cameraPos;
 
     while (window.isOpen())
@@ -40,8 +44,8 @@ int main()
         window.clear();
 
         e.GetRigibody().AddForceContinuous(Vector(0.0, -9.81), timeStep);
-        e.PhysicUpdate(timeStep);
-        e2.PhysicUpdate(timeStep);
+
+        PhysicalWorld::Tick(timeStep);
 
         e.UpdateGraphicsPosition(cameraPos);
         window.draw(e);
