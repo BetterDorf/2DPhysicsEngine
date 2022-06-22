@@ -1,11 +1,13 @@
 #include <iostream>
-#include "Entity.h"
 #include "PhysicalWorld.h"
 #include "CircleCollider.h"
 #include "SFMLUtils.h"
+#include "World.h"
 
 int main()
 {
+    World world;
+
 	std::unique_ptr<Rigibody> rb;
 	rb = std::make_unique<Rigibody>(std::make_unique<CircleCollider>(), Vector(5.0, -4.0), Vector(-40.0, 0.0));
 	std::unique_ptr<Rigibody> rb2;
@@ -15,10 +17,10 @@ int main()
     std::unique_ptr<Rigibody> rb4;
     rb4 = std::make_unique<Rigibody>(std::make_unique<CircleCollider>(), Vector(0.0, 1.0), Vector(34.0, -49.0));
 
-	Entity e(std::move(rb), std::make_unique<sf::CircleShape>(SFMLUtils::PIXELSTOMETERSRATIO/ 2));
-    Entity e2(std::move(rb2), std::make_unique<sf::CircleShape>(SFMLUtils::PIXELSTOMETERSRATIO / 2));
-    Entity e3(std::move(rb3), std::make_unique<sf::CircleShape>(SFMLUtils::PIXELSTOMETERSRATIO / 2));
-    Entity e4(std::move(rb4), std::make_unique<sf::CircleShape>(SFMLUtils::PIXELSTOMETERSRATIO / 2));
+	Entity e(&world, std::move(rb), std::make_unique<sf::CircleShape>(SFMLUtils::PIXELSTOMETERSRATIO/ 2));
+    Entity e2(&world, std::move(rb2), std::make_unique<sf::CircleShape>(SFMLUtils::PIXELSTOMETERSRATIO / 2));
+    Entity e3(&world, std::move(rb3), std::make_unique<sf::CircleShape>(SFMLUtils::PIXELSTOMETERSRATIO / 2));
+    Entity e4(&world, std::move(rb4), std::make_unique<sf::CircleShape>(SFMLUtils::PIXELSTOMETERSRATIO / 2));
 
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "window");
 
