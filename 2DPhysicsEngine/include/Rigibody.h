@@ -1,16 +1,17 @@
 #pragma once
 #include "Vector.h"
+#include "Collider.h"
 
 class Rigibody
 {
 public:
-	Rigibody();
-	explicit Rigibody(Vector pos);
-	Rigibody(Vector pos, double mass);
-	Rigibody(Vector pos, Vector vel);
-	Rigibody(Vector pos, Vector vel, double mass);
+	explicit Rigibody(std::unique_ptr<Collider>);
+	Rigibody(std::unique_ptr<Collider>, Vector pos);
+	Rigibody(std::unique_ptr<Collider>, Vector pos, double mass);
+	Rigibody(std::unique_ptr<Collider>, Vector pos, Vector vel);
+	Rigibody(std::unique_ptr<Collider>, Vector pos, Vector vel, double mass);
 
-	Rigibody(const Rigibody&);
+	Rigibody(const Rigibody&) = delete;
 
 	~Rigibody();
 
@@ -26,10 +27,12 @@ public:
 	[[nodiscard]] Vector GetPos() const { return position_; }
 	[[nodiscard]] Vector GetVelocity() const { return velocity_; }
 	[[nodiscard]] double GetMass() const { return mass_; }
+	[[nodiscard]] Collider* GetCollider() const { return colliderPtr_.get(); }
 
 	void SetPos(const Vector newPos) { position_ = newPos; }
 	void SetVelocity(const Vector newVelocity) { velocity_ = newVelocity; }
 	void SetMass(const double newMass) { mass_ = newMass; }
+	void SetCollider(std::unique_ptr<Collider> newCol) { colliderPtr_.reset(); colliderPtr_ = std::move(newCol); }
 
 private:
 	inline static long CurId = 0;
@@ -39,4 +42,6 @@ private:
 	Vector velocity_ = Vector(0.0, 0.0);
 
 	double mass_ = 1.0;
+
+	std::unique_ptr<Collider> colliderPtr_;
 };

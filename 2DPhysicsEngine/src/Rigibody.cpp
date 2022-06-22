@@ -1,38 +1,29 @@
 #include "Rigibody.h"
 #include "PhysicalWorld.h"
 
-Rigibody::Rigibody() : id_(CurId++)
+Rigibody::Rigibody(std::unique_ptr<Collider> col) : id_(CurId++), colliderPtr_(std::move(col))
 {
 	PhysicalWorld::AddRb(this);
 }
 
-Rigibody::Rigibody(const Vector pos) : Rigibody()
+Rigibody::Rigibody(std::unique_ptr<Collider> col, const Vector pos) : Rigibody(std::move(col))
 {
 	position_ = pos;
 }
 
-Rigibody::Rigibody(const Vector pos, const double mass) : Rigibody(pos)
+Rigibody::Rigibody(std::unique_ptr<Collider> col, const Vector pos, const double mass) : Rigibody(std::move(col), pos)
 {
 	mass_ = mass;
 }
 
-Rigibody::Rigibody(const Vector pos, const Vector vel) : Rigibody(pos)
+Rigibody::Rigibody(std::unique_ptr<Collider> col, const Vector pos, const Vector vel) : Rigibody(std::move(col), pos)
 {
 	velocity_ = vel;
 }
 
-Rigibody::Rigibody(const Vector pos, const Vector vel, const double mass) : Rigibody(pos, vel)
+Rigibody::Rigibody(std::unique_ptr<Collider> col, const Vector pos, const Vector vel, const double mass) : Rigibody(std::move(col), pos, vel)
 {
 	mass_ = mass;
-}
-
-Rigibody::Rigibody(const Rigibody& other)
-{
-	*this = Rigibody();
-
-	this->SetMass(other.GetMass());
-	this->SetPos(other.GetPos());
-	this->SetVelocity(other.GetVelocity());
 }
 
 Rigibody::~Rigibody()
