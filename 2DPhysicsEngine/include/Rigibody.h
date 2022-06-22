@@ -10,6 +10,8 @@ public:
 	Rigibody(std::unique_ptr<Collider>, Vector pos, double mass);
 	Rigibody(std::unique_ptr<Collider>, Vector pos, Vector vel);
 	Rigibody(std::unique_ptr<Collider>, Vector pos, Vector vel, double mass);
+	Rigibody(std::unique_ptr<Collider>, Vector pos, Vector vel, double mass, bool isStatic);
+	Rigibody(std::unique_ptr<Collider>, Vector pos, Vector vel, double mass, bool isStatic, bool useGravity);
 
 	Rigibody(const Rigibody&) = delete;
 

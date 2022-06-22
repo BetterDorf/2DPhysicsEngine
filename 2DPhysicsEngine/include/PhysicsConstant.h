@@ -2,5 +2,5 @@
 
 namespace PhysicsConstants
 {
-	constexpr double CollisionSolvingForce = 20.0;
+	constexpr double GRAVITY_ACCELERATION = 9.806;
 }

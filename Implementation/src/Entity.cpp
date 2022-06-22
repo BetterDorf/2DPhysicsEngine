@@ -2,10 +2,10 @@
 #include "SFMLUtils.h"
 #include "World.h"
 
-Entity::Entity(World* world, std::unique_ptr<Rigibody> rigibody, std::unique_ptr<sf::Drawable> drawable)
+Entity::Entity(std::unique_ptr<Rigibody> rigibody, std::unique_ptr<sf::Drawable> drawable)
 : id_(curId++), rbPtr_(std::move(rigibody)), visualPtr_(std::move(drawable))
 {
-	world->AddEntity(this);
+	
 }
 
 void Entity::draw(sf::RenderTarget& target, const sf::RenderStates states) const

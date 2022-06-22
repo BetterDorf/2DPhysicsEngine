@@ -51,8 +51,10 @@ void PhysicalWorld::Tick(const double timeElapsed)
 	}
 
 	//Move each object
-	for (const auto rbPtr : rigibodies_ | std::views::values)
+	for (const auto rb : rigibodies_ | std::views::values)
 	{
-		rbPtr->Update(timeElapsed);
+		if (rb->)
+
+		rb->Update(timeElapsed);
 	}
 }

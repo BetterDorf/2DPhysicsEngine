@@ -6,15 +6,22 @@
 class World
 {
 public:
-	World();
+	explicit World(std::unique_ptr<sf::RenderWindow> window) : window_(std::move(window)) {}
 
-	void AddEntity(Entity*);
+	void AddEntity(std::unique_ptr<Entity>);
 	void RemoveEntity(long);
-private:
-	std::map<long, Entity*> entities_;
 
-	sf::Window window_;
+	void Start();
+private:
+	std::map<long, std::unique_ptr<Entity>> entities_;
+
+	std::unique_ptr<sf::RenderWindow> window_;
+
+	Vector cameraPos_;
 
 	/*int physicFramePerSeconds_;
 	int framePerSeconds_;*/
+
+	void Update(double);
+	void UpdatePhysics(double);
 };
