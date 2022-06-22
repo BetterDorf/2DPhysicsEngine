@@ -6,6 +6,7 @@ class Rigibody
 public:
 	Rigibody();
 	explicit Rigibody(Vector pos);
+	Rigibody(Vector pos, double mass);
 	Rigibody(Vector pos, Vector vel);
 	Rigibody(Vector pos, Vector vel, double mass);
 

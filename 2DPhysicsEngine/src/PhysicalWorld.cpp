@@ -2,11 +2,11 @@
 
 #include <ranges>
 
-std::map<long, Rigibody&> PhysicalWorld::rigibodies_ = std::map<long, Rigibody&>{};
+std::map<long, Rigibody*> PhysicalWorld::rigibodies_ = std::map<long, Rigibody*>{};
 
-void PhysicalWorld::AddRb(Rigibody& rb)
+void PhysicalWorld::AddRb(Rigibody* rb)
 {
-	rigibodies_.emplace(rb.GetId(), rb);
+	rigibodies_.emplace(rb->GetId(), rb);
 }
 
 void PhysicalWorld::RemoveRb(const long id)
@@ -16,8 +16,17 @@ void PhysicalWorld::RemoveRb(const long id)
 
 void PhysicalWorld::Tick(const double timeElapsed)
 {
-	for (auto& rb : rigibodies_ | std::views::values)
+	//Check collisions
+	for (const auto rbPtr1 : rigibodies_ | std::views::values)
 	{
-		rb.Update(timeElapsed);
+		for (const auto rbPtr2 : rigibodies_ | std::views::values)
+		{
+
+		}
+	}
+
+	for (const auto rbPtr : rigibodies_ | std::views::values)
+	{
+		rbPtr->Update(timeElapsed);
 	}
 }

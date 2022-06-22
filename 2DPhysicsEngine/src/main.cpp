@@ -2,13 +2,14 @@
 #include "Entity.h"
 #include "PhysicalWorld.h"
 
+#include "CircleCollider.h"
+
 int main()
 {
 	std::unique_ptr<Rigibody> rb;
 	rb = std::make_unique<Rigibody>(Vector(5.0, -4.0), Vector(0.3, 0.7));
 	std::unique_ptr<Rigibody> rb2;
-	rb2 = std::make_unique<Rigibody>(Vector(0.0, -10.0), Vector(0.3, 0.7));
-
+	rb2 = std::make_unique<Rigibody>(Vector(0.0, -10.0), Vector(7.3, 2.0));
 
 	Entity e(std::move(rb), std::make_unique<sf::CircleShape>(100));
     Entity e2(std::move(rb2), std::make_unique<sf::CircleShape>(50));
@@ -44,6 +45,7 @@ int main()
         window.clear();
 
         e.GetRigibody().AddForceContinuous(Vector(0.0, -9.81), timeStep);
+        e2.GetRigibody().AddForceContinuous(Vector(0.0, -9.81), timeStep);
 
         PhysicalWorld::Tick(timeStep);
 

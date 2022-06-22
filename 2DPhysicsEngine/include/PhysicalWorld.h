@@ -8,9 +8,9 @@ class PhysicalWorld
 public:
 	PhysicalWorld() = delete;
 
-	static void AddRb(Rigibody&);
+	static void AddRb(Rigibody*);
 	static void RemoveRb(long);
 	static void Tick(double timeElapsed);
 private:
-	static std::map<long, Rigibody&> rigibodies_;
+	static std::map<long, Rigibody*> rigibodies_;
 };

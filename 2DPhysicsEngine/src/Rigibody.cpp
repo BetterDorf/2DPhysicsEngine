@@ -3,12 +3,17 @@
 
 Rigibody::Rigibody() : id_(CurId++)
 {
-	PhysicalWorld::AddRb(*this);
+	PhysicalWorld::AddRb(this);
 }
 
 Rigibody::Rigibody(const Vector pos) : Rigibody()
 {
 	position_ = pos;
+}
+
+Rigibody::Rigibody(const Vector pos, const double mass) : Rigibody(pos)
+{
+	mass_ = mass;
 }
 
 Rigibody::Rigibody(const Vector pos, const Vector vel) : Rigibody(pos)
