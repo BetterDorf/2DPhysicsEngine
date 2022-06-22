@@ -18,7 +18,12 @@ public:
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
+	int GetId() const { return id_; }
+
 private:
+	int id_;
+	inline static int curId = 0;
+
 	std::unique_ptr<Rigibody> rbPtr_;
 	std::unique_ptr<sf::Drawable> visualPtr_;
 };

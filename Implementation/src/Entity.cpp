@@ -3,7 +3,7 @@
 #include "World.h"
 
 Entity::Entity(World* world, std::unique_ptr<Rigibody> rigibody, std::unique_ptr<sf::Drawable> drawable)
-: rbPtr_(std::move(rigibody)), visualPtr_(std::move(drawable))
+: id_(curId++), rbPtr_(std::move(rigibody)), visualPtr_(std::move(drawable))
 {
 	world->AddEntity(this);
 }

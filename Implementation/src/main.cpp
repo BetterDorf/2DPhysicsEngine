@@ -30,6 +30,9 @@ int main()
 
     while (window.isOpen())
     {
+        //REMOVE THAT LATER
+        world.Update();
+
         sf::Event event{};
 
         while (window.pollEvent(event))
