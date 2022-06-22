@@ -2,26 +2,20 @@
 
 namespace Collisions
 {
-	bool CheckCollision(Collider* col1, Collider* col2)
+	bool CheckCollision(const Rigibody* rb1, const Rigibody* rb2)
 	{
-		if (col1->GetShapeType() == Collider::ShapeType::Circle && col2->GetShapeType() == Collider::ShapeType::Circle)
+		if (rb1->GetCollider()->GetShapeType() == Collider::ShapeType::Circle && 
+			rb2->GetCollider()->GetShapeType() == Collider::ShapeType::Circle)
 		{
-			const auto circle1 = dynamic_cast<CircleCollider*>(col1);
-			const auto circle2 = dynamic_cast<CircleCollider*>(col2);
+			const auto circle1 = dynamic_cast<CircleCollider*>(rb1->GetCollider());
+			const auto circle2 = dynamic_cast<CircleCollider*>(rb2->GetCollider());
 
-			return CircleToCircleCollision(circle1, circle2);
-		}
+			const double distanceBetweenCenters = (rb1->GetPos() - rb2->GetPos()).Magnitude();
 
-		return false;
-	}
+			if (distanceBetweenCenters <= circle1->GetRadius() || distanceBetweenCenters <= circle2->GetRadius())
+				return true;
 
-	bool CircleToCircleCollision(const CircleCollider* circle1, const CircleCollider* circle2)
-	{
-		const double distanceToC2Center = (circle1->GetRigibody()->GetPos() - circle2->GetRigibody()->GetPos()).Magnitude();
-
-		if (distanceToC2Center <= circle1->GetRadius())
-		{
-			return true;
+			return false;
 		}
 
 		return false;

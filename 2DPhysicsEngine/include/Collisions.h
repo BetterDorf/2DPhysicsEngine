@@ -13,6 +13,5 @@ namespace Collisions
 		bool HasCollided;
 	};
 
-	bool CircleToCircleCollision(const CircleCollider* circle1, const CircleCollider* circle2);
-	bool CheckCollision(Collider* col1, Collider* col2);
+	bool CheckCollision(const Rigibody* rb1, const Rigibody* rb2);
 }

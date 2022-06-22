@@ -1,4 +1,5 @@
 #include "PhysicalWorld.h"
+#include "Collisions.h"
 
 #include <ranges>
 
@@ -21,7 +22,10 @@ void PhysicalWorld::Tick(const double timeElapsed)
 	{
 		for (const auto rbPtr2 : rigibodies_ | std::views::values)
 		{
-
+			if (rbPtr1 != rbPtr2)
+			{
+				std::cout << Collisions::CheckCollision(rbPtr1, rbPtr2) << std::endl;
+			}
 		}
 	}
 
