@@ -7,17 +7,24 @@
 int main()
 {
 	std::unique_ptr<Rigibody> rb;
-	rb = std::make_unique<Rigibody>(std::make_unique<CircleCollider>(), Vector(5.0, -4.0), Vector(0.3, 0.7));
+	rb = std::make_unique<Rigibody>(std::make_unique<CircleCollider>(), Vector(5.0, -4.0), Vector(-40.0, 0.0));
 	std::unique_ptr<Rigibody> rb2;
-	rb2 = std::make_unique<Rigibody>(std::make_unique<CircleCollider>(), Vector(5.0, -4.0), Vector(7.3, 2.0));
+	rb2 = std::make_unique<Rigibody>(std::make_unique<CircleCollider>(), Vector(2.0, -4.0), Vector(20.0, 5.0));
+    std::unique_ptr<Rigibody> rb3;
+    rb3 = std::make_unique<Rigibody>(std::make_unique<CircleCollider>(), Vector(2.0, 0.0), Vector(4.0, -49.0));
+    std::unique_ptr<Rigibody> rb4;
+    rb4 = std::make_unique<Rigibody>(std::make_unique<CircleCollider>(), Vector(0.0, 1.0), Vector(34.0, -49.0));
 
 	Entity e(std::move(rb), std::make_unique<sf::CircleShape>(SFMLUtils::PIXELSTOMETERSRATIO/ 2));
     Entity e2(std::move(rb2), std::make_unique<sf::CircleShape>(SFMLUtils::PIXELSTOMETERSRATIO / 2));
+    Entity e3(std::move(rb3), std::make_unique<sf::CircleShape>(SFMLUtils::PIXELSTOMETERSRATIO / 2));
+    Entity e4(std::move(rb4), std::make_unique<sf::CircleShape>(SFMLUtils::PIXELSTOMETERSRATIO / 2));
 
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "window");
 
     double timeStep = 1.0 / 6000.0;
-    Vector cameraPos;
+    Vector cameraPos(- (window.getSize().x / SFMLUtils::PIXELSTOMETERSRATIO) / 2.0,
+        - (window.getSize().y / SFMLUtils::PIXELSTOMETERSRATIO) / 2.0);
 
     while (window.isOpen())
     {
@@ -46,6 +53,8 @@ int main()
 
         e.GetRigibody().AddForceContinuous(Vector(0.0, -9.81), timeStep);
         e2.GetRigibody().AddForceContinuous(Vector(0.0, -9.81), timeStep);
+        e3.GetRigibody().AddForceContinuous(Vector(0.0, -9.81), timeStep);
+        e4.GetRigibody().AddForceContinuous(Vector(0.0, -9.81), timeStep);
 
         PhysicalWorld::Tick(timeStep);
 
@@ -54,6 +63,12 @@ int main()
 
         e2.UpdateGraphicsPosition(cameraPos);
         window.draw(e2);
+
+        e3.UpdateGraphicsPosition(cameraPos);
+        window.draw(e3);
+
+        e4.UpdateGraphicsPosition(cameraPos);
+        window.draw(e4);
 
         window.display();
     }

@@ -35,7 +35,7 @@ Vector Vector::Normalize() const
 	return *this / this->Magnitude();
 }
 
-Vector Vector::GetPerpendicularVector(const bool clockwise = true) const
+Vector Vector::GetPerpendicularVector(const bool clockwise) const
 {
 	Vector perpendicular;
 

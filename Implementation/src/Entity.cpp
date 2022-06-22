@@ -20,4 +20,3 @@ void Entity::UpdateGraphicsPosition(const Vector cameraPos)
 	const sf::Vector2f pos = SFMLUtils::WorldToScreenPos(rbPtr_->GetPos(), cameraPos);
 	setPosition(pos);
 }
-

@@ -20,7 +20,7 @@ public:
 	[[nodiscard]] double Magnitude() const;
 	[[nodiscard]] Vector Normalize() const;
 
-	[[nodiscard]] Vector GetPerpendicularVector(bool clockwise) const;
+	[[nodiscard]] Vector GetPerpendicularVector(bool clockwise = true) const;
 
 	[[nodiscard]] double AngleRadWith(Vector other) const;
 	[[nodiscard]] double AngleDegWith(Vector other) const;

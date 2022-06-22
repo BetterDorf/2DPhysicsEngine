@@ -10,8 +10,5 @@ project ("2dphysicsengine")
 set(EXECUTABLE_CUSTOM_NAME "2DPhysicsEngine")
 add_subdirectory ("2DPhysicsEngine")
 
-set(EXECUTABLE_CUSTOM_NAME "Vector")
-add_subdirectory ("Vector")
-
-set(EXECUTABLE_CUSTOM_NAME "Sfml")
-add_subdirectory ("Sfml")
+set(EXECUTABLE_CUSTOM_NAME "Implementation")
+add_subdirectory ("Implementation")
