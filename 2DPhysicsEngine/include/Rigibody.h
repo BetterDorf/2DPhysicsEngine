@@ -24,12 +24,16 @@ public:
 
 	void AddForceImpulse(Vector force);
 	void AddForceContinuous(Vector force, double time);
+	void AddAcceleration(Vector acceleration);
+	void AddAccelerationContinuous(Vector acceleration, double time);
 
 	[[nodiscard]] long GetId() const { return id_; }
 	[[nodiscard]] Vector GetPos() const { return position_; }
 	[[nodiscard]] Vector GetVelocity() const { return velocity_; }
 	[[nodiscard]] double GetMass() const { return mass_; }
 	[[nodiscard]] Collider* GetCollider() const { return colliderPtr_.get(); }
+	[[nodiscard]] bool IsStatic() const { return isStatic_; }
+	[[nodiscard]] bool UseGravity() const { return useGravity_; }
 
 	void SetPos(const Vector newPos) { position_ = newPos; }
 	void SetVelocity(const Vector newVelocity) { velocity_ = newVelocity; }
@@ -44,6 +48,8 @@ private:
 	Vector velocity_ = Vector(0.0, 0.0);
 
 	double mass_ = 1.0;
+	bool useGravity_ = true;
+	bool isStatic_ = false;
 
 	std::unique_ptr<Collider> colliderPtr_;
 };

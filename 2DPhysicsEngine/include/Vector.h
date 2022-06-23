@@ -5,7 +5,7 @@ class Vector
 {
 public:
 	Vector() = default;
-	explicit Vector(const double x, const double y) : X(x), Y(y) {}
+	constexpr explicit Vector(const double x, const double y) : X(x), Y(y) {}
 
 	double X = 0.0;
 	double Y = 0.0;

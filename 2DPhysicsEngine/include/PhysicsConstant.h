@@ -1,6 +1,10 @@
 #pragma once
+#include "Vector.h"
 
 namespace PhysicsConstants
 {
-	constexpr double GRAVITY_ACCELERATION = 9.806;
+	static constexpr double gravHorizontal = 0.0;
+	static constexpr double gravVertical = -9.806;
+
+	constexpr Vector GRAVITY_ACCELERATION(gravHorizontal, gravVertical);
 }

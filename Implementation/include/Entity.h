@@ -4,7 +4,7 @@
 
 class World;
 
-class Entity final :public sf::Drawable, public sf::Transformable
+class Entity final : public sf::Drawable, public sf::Transformable
 {
 public:
 	Entity(std::unique_ptr<Rigibody>, std::unique_ptr<sf::Drawable>);

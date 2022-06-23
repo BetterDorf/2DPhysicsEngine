@@ -26,6 +26,19 @@ Rigibody::Rigibody(std::unique_ptr<Collider> col, const Vector pos, const Vector
 	mass_ = mass;
 }
 
+Rigibody::Rigibody(std::unique_ptr<Collider> col, const Vector pos, const Vector vel, const double mass, const bool isStatic)
+	: Rigibody(std::move(col), pos, vel, mass)
+{
+	isStatic_ = isStatic;
+}
+
+Rigibody::Rigibody(std::unique_ptr<Collider> col, const Vector pos, const Vector vel, const double mass, const bool isStatic, const bool useGravity)
+	: Rigibody(std::move(col), pos, vel, mass, isStatic)
+{
+	useGravity_ = useGravity;
+}
+
+
 Rigibody::~Rigibody()
 {
 	PhysicalWorld::RemoveRb(id_);
@@ -39,10 +52,32 @@ void Rigibody::Update(const double time)
 
 void Rigibody::AddForceImpulse(const Vector force)
 {
+	if (isStatic_)
+		return;
+
 	this->velocity_ += force / mass_;
 }
  
 void Rigibody::AddForceContinuous(const Vector force, const double time)
 {
+	if (isStatic_)
+		return;
+
 	this->velocity_ += force * time / mass_;
+}
+
+void Rigibody::AddAcceleration(const Vector acceleration)
+{
+	if (isStatic_)
+		return;
+
+	this->velocity_ += acceleration;
+}
+
+void Rigibody::AddAccelerationContinuous(const Vector acceleration, const double time)
+{
+	if (isStatic_)
+		return;
+
+	this->velocity_ += acceleration * time;
 }

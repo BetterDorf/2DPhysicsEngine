@@ -4,7 +4,7 @@
 class CircleCollider : public Collider
 {
 public:
-	CircleCollider() : radius_(1.0) {}
+	CircleCollider() : radius_(0.5) {}
 	explicit CircleCollider(const double radius) : radius_(radius) { }
 
 	[[nodiscard]] ShapeType GetShapeType() const override { return ShapeType::Circle; }
