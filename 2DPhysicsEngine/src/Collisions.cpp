@@ -32,8 +32,8 @@ namespace Collisions
 	void SolveVelocities(Rigibody* rb1, Rigibody* rb2)
 	{
 		//Find the normal and tangent vector of the collision
-		const Vector normalVector = (rb2->GetPos() - rb1->GetPos()).Normalize();
-		const Vector tangVector = normalVector.GetPerpendicularVector(true);
+		const Vector2D normalVector = (rb2->GetPos() - rb1->GetPos()).Normalize();
+		const Vector2D tangVector = normalVector.GetPerpendicularVector(true);
 
 		//Calculate projections of V1 on normal and tangent
 		const double V1n = (normalVector.X * rb1->GetVelocity().X + normalVector.Y * rb1->GetVelocity().Y);
@@ -44,9 +44,9 @@ namespace Collisions
 		const double V2t = (tangVector.X * rb2->GetVelocity().X + tangVector.Y * rb2->GetVelocity().Y);
 
 		//Set velocities according to their elastic collisions on each axis
-		rb1->SetVelocity(Vector(normalVector.X * V2n + tangVector.X * V1t,
+		rb1->SetVelocity(Vector2D(normalVector.X * V2n + tangVector.X * V1t,
 			normalVector.Y * V2n + tangVector.Y * V1t));
-		rb2->SetVelocity(Vector(normalVector.X * V1n + tangVector.X * V2t,
+		rb2->SetVelocity(Vector2D(normalVector.X * V1n + tangVector.X * V2t,
 			normalVector.Y * V1n + tangVector.Y * V2t));
 	}
 }

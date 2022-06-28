@@ -40,13 +40,13 @@ void World::Update(const double deltaTime)
     constexpr double cameraSpeed = 500.0;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
-        cameraPos_ += Vector(0, cameraSpeed * deltaTime);
+        cameraPos_ += Vector2D(0, cameraSpeed * deltaTime);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
-        cameraPos_ += Vector(0, -cameraSpeed * deltaTime);
+        cameraPos_ += Vector2D(0, -cameraSpeed * deltaTime);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
-        cameraPos_ += Vector(cameraSpeed * deltaTime, 0);
+        cameraPos_ += Vector2D(cameraSpeed * deltaTime, 0);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
-        cameraPos_ += Vector(-cameraSpeed * deltaTime, 0);
+        cameraPos_ += Vector2D(-cameraSpeed * deltaTime, 0);
 
     //Draw
     window_->clear();

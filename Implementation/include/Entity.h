@@ -16,7 +16,7 @@ public:
 
 	bool flaggedForRemoval = false;
 
-	void UpdateGraphicsPosition(Vector cameraPos);
+	void UpdateGraphicsPosition(Vector2D cameraPos);
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 

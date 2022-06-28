@@ -17,11 +17,11 @@ private:
 
 	std::unique_ptr<sf::RenderWindow> window_;
 
-	Vector cameraPos_;
+	Vector2D cameraPos_;
 
 	/*int physicFramePerSeconds_;
 	int framePerSeconds_;*/
 
 	void Update(double);
-	void UpdatePhysics(double);
+	static void UpdatePhysics(double);
 };
