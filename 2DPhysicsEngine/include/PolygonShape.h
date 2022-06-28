@@ -4,12 +4,19 @@
 
 #include <vector>
 
-class PolygonShape : public PhysicShape
+class PolygonShape final : public PhysicShape
 {
 public:
-	PolygonShape();
+	explicit PolygonShape(std::vector<Vector2D>);
 
 	[[nodiscard]] ShapeType GetShapeType() const override { return ShapeType::Polygon; }
+
+	[[nodiscard]] Vector2D GetFurthestPoint(Vector2D dir) const override;
+	void InsertPoint(Vector2D point, int id);
+
+	[[nodiscard]] std::vector<Vector2D>& GetPoints() { return points_; }
 private:
 	std::vector<Vector2D> points_;
+
+	void RepositionCenter();
 };

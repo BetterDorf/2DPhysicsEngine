@@ -81,3 +81,13 @@ void Rigibody::AddAccelerationContinuous(const Vector2D acceleration, const doub
 
 	this->velocity_ += acceleration * time;
 }
+
+Vector2D Rigibody::LocalToWorldPos(const Vector2D local) const
+{
+	return local + position_;
+}
+
+Vector2D Rigibody::WorldToLocalPos(const Vector2D world) const
+{
+	return world - position_;
+}

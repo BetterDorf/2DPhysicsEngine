@@ -1,6 +1,7 @@
 #include <iostream>
 #include "PhysicalWorld.h"
 #include "CircleShape.h"
+#include "PolygonShape.h"
 #include "SFMLUtils.h"
 #include "World.h"
 
@@ -22,6 +23,15 @@ int main()
         std::make_unique<sf::CircleShape>(SFMLUtils::PIXELSTOMETERSRATIO * 0.5)));
     world.AddEntity(std::make_unique<Entity>(std::move(rb5), std::make_unique<sf::CircleShape>(SFMLUtils::PIXELSTOMETERSRATIO * 1)));
 #pragma endregion
+
+    //Testing polygonal shapes
+    PolygonShape shape(std::vector {Vector2D(12.0, 13.0), Vector2D(7.0, 17.0), Vector2D( 10.0, 10.0),});
+    for (auto& element : shape.GetPoints())
+    {
+        std::cout << element.ToString() << std::endl;
+    }
+    std::cout << shape.GetFurthestPoint(Vector2D(-1.0, 0.0)).ToString() << std::endl;
+
     world.Start();
 
     std::cout << "Hello World !\n";

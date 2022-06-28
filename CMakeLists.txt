@@ -7,8 +7,8 @@ cmake_minimum_required (VERSION 3.8)
 project ("2dphysicsengine")
 
 # Include sub-projects.
-set(EXECUTABLE_CUSTOM_NAME "2DPhysicsEngine")
-add_subdirectory ("2DPhysicsEngine")
+#set(EXECUTABLE_CUSTOM_NAME "2DPhysicsEngine")
+#add_subdirectory ("2DPhysicsEngine")
 
 set(EXECUTABLE_CUSTOM_NAME "Implementation")
 add_subdirectory ("Implementation")

@@ -27,6 +27,9 @@ public:
 	void AddAcceleration(Vector2D acceleration);
 	void AddAccelerationContinuous(Vector2D acceleration, double time);
 
+	Vector2D LocalToWorldPos(Vector2D) const;
+	Vector2D WorldToLocalPos(Vector2D) const;
+
 	[[nodiscard]] long GetId() const { return id_; }
 	[[nodiscard]] Vector2D GetPos() const { return position_; }
 	[[nodiscard]] Vector2D GetVelocity() const { return velocity_; }
