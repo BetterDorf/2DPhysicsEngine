@@ -1,11 +1,11 @@
 #pragma once
-#include "Collider.h"
+#include "PhysicShape.h"
 
-class CircleCollider : public Collider
+class CircleShape : public PhysicShape
 {
 public:
-	CircleCollider() : radius_(0.5) {}
-	explicit CircleCollider(const double radius) : radius_(radius) { }
+	CircleShape() : radius_(0.5) {}
+	explicit CircleShape(const double radius) : radius_(radius) { }
 
 	[[nodiscard]] ShapeType GetShapeType() const override { return ShapeType::Circle; }
 

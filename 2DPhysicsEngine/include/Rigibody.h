@@ -1,17 +1,17 @@
 #pragma once
 #include "Vector.h"
-#include "Collider.h"
+#include "PhysicShape.h"
 
 class Rigibody
 {
 public:
-	explicit Rigibody(std::unique_ptr<Collider>);
-	Rigibody(std::unique_ptr<Collider>, Vector pos);
-	Rigibody(std::unique_ptr<Collider>, Vector pos, double mass);
-	Rigibody(std::unique_ptr<Collider>, Vector pos, Vector vel);
-	Rigibody(std::unique_ptr<Collider>, Vector pos, Vector vel, double mass);
-	Rigibody(std::unique_ptr<Collider>, Vector pos, Vector vel, double mass, bool isStatic);
-	Rigibody(std::unique_ptr<Collider>, Vector pos, Vector vel, double mass, bool isStatic, bool useGravity);
+	explicit Rigibody(std::unique_ptr<PhysicShape>);
+	Rigibody(std::unique_ptr<PhysicShape>, Vector pos);
+	Rigibody(std::unique_ptr<PhysicShape>, Vector pos, double mass);
+	Rigibody(std::unique_ptr<PhysicShape>, Vector pos, Vector vel);
+	Rigibody(std::unique_ptr<PhysicShape>, Vector pos, Vector vel, double mass);
+	Rigibody(std::unique_ptr<PhysicShape>, Vector pos, Vector vel, double mass, bool isStatic);
+	Rigibody(std::unique_ptr<PhysicShape>, Vector pos, Vector vel, double mass, bool isStatic, bool useGravity);
 
 	Rigibody(const Rigibody&) = delete;
 
@@ -31,14 +31,14 @@ public:
 	[[nodiscard]] Vector GetPos() const { return position_; }
 	[[nodiscard]] Vector GetVelocity() const { return velocity_; }
 	[[nodiscard]] double GetMass() const { return mass_; }
-	[[nodiscard]] Collider* GetCollider() const { return colliderPtr_.get(); }
+	[[nodiscard]] PhysicShape* GetCollider() const { return colliderPtr_.get(); }
 	[[nodiscard]] bool IsStatic() const { return isStatic_; }
 	[[nodiscard]] bool UseGravity() const { return useGravity_; }
 
 	void SetPos(const Vector newPos) { position_ = newPos; }
 	void SetVelocity(const Vector newVelocity) { velocity_ = newVelocity; }
 	void SetMass(const double newMass) { mass_ = newMass; }
-	void SetCollider(std::unique_ptr<Collider> newCol) { colliderPtr_.reset(); colliderPtr_ = std::move(newCol); }
+	void SetCollider(std::unique_ptr<PhysicShape> newCol) { colliderPtr_.reset(); colliderPtr_ = std::move(newCol); }
 
 private:
 	inline static long CurId = 0;
@@ -51,5 +51,5 @@ private:
 	bool useGravity_ = true;
 	bool isStatic_ = false;
 
-	std::unique_ptr<Collider> colliderPtr_;
+	std::unique_ptr<PhysicShape> colliderPtr_;
 };

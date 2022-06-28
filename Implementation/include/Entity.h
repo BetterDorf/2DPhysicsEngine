@@ -7,13 +7,15 @@ class World;
 class Entity final : public sf::Drawable, public sf::Transformable
 {
 public:
-	Entity(std::unique_ptr<Rigibody>, std::unique_ptr<sf::Drawable>);
+	Entity(std::unique_ptr<Rigibody>, std::unique_ptr<sf::CircleShape>);
+	Entity(std::unique_ptr<Rigibody>, std::unique_ptr<sf::RectangleShape>);
+	Entity(std::unique_ptr<Rigibody>, std::unique_ptr<sf::Sprite>);
+	Entity(std::unique_ptr<Rigibody>, std::unique_ptr<sf::Drawable>, sf::Vector2f centerOffset);
 
 	[[nodiscard]] Rigibody& GetRigibody() const { return *rbPtr_; }
 
 	bool flaggedForRemoval = false;
 
-	void PhysicUpdate(double timeElapsed) const;
 	void UpdateGraphicsPosition(Vector cameraPos);
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

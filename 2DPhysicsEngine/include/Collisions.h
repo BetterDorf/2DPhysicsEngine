@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Rigibody.h"
-#include "CircleCollider.h"
+#include "CircleShape.h"
 
 namespace Collisions
 {

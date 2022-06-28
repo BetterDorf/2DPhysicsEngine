@@ -20,7 +20,7 @@ void World::Start()
 	while (window_->isOpen())
 	{
 		Update(1.0 / 60.0);
-		UpdatePhysics(1.0 / 6000.0);
+		UpdatePhysics(1.0 / 60.0);
 	}
 }
 

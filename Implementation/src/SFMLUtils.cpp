@@ -11,8 +11,8 @@ namespace SFMLUtils
 
 	Vector ScreenToWorldPos(const sf::Vector2f screenPos, const Vector cameraPos)
 	{
-		const Vector newPos = Vector(static_cast<double>(screenPos.x) / PIXELSTOMETERSRATIO,
-			static_cast<double>(screenPos.y) / PIXELSTOMETERSRATIO) + cameraPos;
+		const Vector newPos = Vector(static_cast<double>(screenPos.x),
+			static_cast<double>(- screenPos.y)) / PIXELSTOMETERSRATIO + cameraPos;
 
 		return newPos;
 	}

@@ -1,15 +1,15 @@
 #pragma once
 
-class Collider
+class PhysicShape
 {
 public:
 	enum class ShapeType
 	{
 		None,
 		Circle,
-		Rectangle
+		Polygon
 	};
 
-	[[nodiscard]] static bool CheckCollision(Collider*, Collider*);
+	[[nodiscard]] static bool CheckCollision(PhysicShape*, PhysicShape*);
 	[[nodiscard]] virtual ShapeType GetShapeType() const = 0;
 };

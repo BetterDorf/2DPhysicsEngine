@@ -1,38 +1,38 @@
 #include "Rigibody.h"
 #include "PhysicalWorld.h"
 
-Rigibody::Rigibody(std::unique_ptr<Collider> col) : id_(CurId++), colliderPtr_(std::move(col))
+Rigibody::Rigibody(std::unique_ptr<PhysicShape> col) : id_(CurId++), colliderPtr_(std::move(col))
 {
 	PhysicalWorld::AddRb(this);
 }
 
-Rigibody::Rigibody(std::unique_ptr<Collider> col, const Vector pos) : Rigibody(std::move(col))
+Rigibody::Rigibody(std::unique_ptr<PhysicShape> col, const Vector pos) : Rigibody(std::move(col))
 {
 	position_ = pos;
 }
 
-Rigibody::Rigibody(std::unique_ptr<Collider> col, const Vector pos, const double mass) : Rigibody(std::move(col), pos)
+Rigibody::Rigibody(std::unique_ptr<PhysicShape> col, const Vector pos, const double mass) : Rigibody(std::move(col), pos)
 {
 	mass_ = mass;
 }
 
-Rigibody::Rigibody(std::unique_ptr<Collider> col, const Vector pos, const Vector vel) : Rigibody(std::move(col), pos)
+Rigibody::Rigibody(std::unique_ptr<PhysicShape> col, const Vector pos, const Vector vel) : Rigibody(std::move(col), pos)
 {
 	velocity_ = vel;
 }
 
-Rigibody::Rigibody(std::unique_ptr<Collider> col, const Vector pos, const Vector vel, const double mass) : Rigibody(std::move(col), pos, vel)
+Rigibody::Rigibody(std::unique_ptr<PhysicShape> col, const Vector pos, const Vector vel, const double mass) : Rigibody(std::move(col), pos, vel)
 {
 	mass_ = mass;
 }
 
-Rigibody::Rigibody(std::unique_ptr<Collider> col, const Vector pos, const Vector vel, const double mass, const bool isStatic)
+Rigibody::Rigibody(std::unique_ptr<PhysicShape> col, const Vector pos, const Vector vel, const double mass, const bool isStatic)
 	: Rigibody(std::move(col), pos, vel, mass)
 {
 	isStatic_ = isStatic;
 }
 
-Rigibody::Rigibody(std::unique_ptr<Collider> col, const Vector pos, const Vector vel, const double mass, const bool isStatic, const bool useGravity)
+Rigibody::Rigibody(std::unique_ptr<PhysicShape> col, const Vector pos, const Vector vel, const double mass, const bool isStatic, const bool useGravity)
 	: Rigibody(std::move(col), pos, vel, mass, isStatic)
 {
 	useGravity_ = useGravity;

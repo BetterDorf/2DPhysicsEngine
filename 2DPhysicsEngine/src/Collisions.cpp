@@ -7,11 +7,11 @@ namespace Collisions
 		ColData data;
 		data.HasCollided = false;
 
-		if (rb1->GetCollider()->GetShapeType() == Collider::ShapeType::Circle && 
-			rb2->GetCollider()->GetShapeType() == Collider::ShapeType::Circle)
+		if (rb1->GetCollider()->GetShapeType() == PhysicShape::ShapeType::Circle && 
+			rb2->GetCollider()->GetShapeType() == PhysicShape::ShapeType::Circle)
 		{
-			const auto circle1 = dynamic_cast<CircleCollider*>(rb1->GetCollider());
-			const auto circle2 = dynamic_cast<CircleCollider*>(rb2->GetCollider());
+			const auto circle1 = dynamic_cast<CircleShape*>(rb1->GetCollider());
+			const auto circle2 = dynamic_cast<CircleShape*>(rb2->GetCollider());
 
 			const double distanceBetweenCenters = (rb1->GetPos() - rb2->GetPos()).Magnitude();
 
