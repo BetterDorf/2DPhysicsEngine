@@ -6,7 +6,8 @@
 class World
 {
 public:
-	explicit World(std::unique_ptr<sf::RenderWindow> window) : window_(std::move(window)) {}
+	explicit World(std::unique_ptr<sf::RenderWindow> window, double physicsTimestep) : window_(std::move(window)),
+	physicsTimestep_(physicsTimestep){}
 
 	void AddEntity(std::unique_ptr<Entity>);
 	void RemoveEntity(long);
@@ -18,6 +19,7 @@ private:
 	std::unique_ptr<sf::RenderWindow> window_;
 
 	Vector2D cameraPos_;
+	double physicsTimestep_;
 
 	/*int physicFramePerSeconds_;
 	int framePerSeconds_;*/

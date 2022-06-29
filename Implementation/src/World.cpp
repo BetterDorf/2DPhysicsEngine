@@ -17,10 +17,22 @@ void World::RemoveEntity(const long id)
 
 void World::Start()
 {
+    sf::Clock clock;
+    sf::Time collectedEllapse;
+    sf::Time lastPhysicFrame;
+
 	while (window_->isOpen())
 	{
-		Update(1.0 / 60.0);
-		UpdatePhysics(1.0 / 60.0);
+        sf::Time elapsed = clock.restart();
+        collectedEllapse += elapsed;
+
+		Update(static_cast<double>(elapsed.asSeconds()));
+
+        if (static_cast<double>((collectedEllapse - lastPhysicFrame).asSeconds()) > physicsTimestep_)
+        {
+			UpdatePhysics(static_cast<double>((collectedEllapse - lastPhysicFrame).asSeconds()));
+            lastPhysicFrame = collectedEllapse;
+        }
 	}
 }
 

@@ -7,7 +7,7 @@
 
 int main()
 {
-    World world(std::make_unique<sf::RenderWindow>(sf::VideoMode(1920, 1080), "2DPhysics Demoz Nemoz"));
+    World world(std::make_unique<sf::RenderWindow>(sf::VideoMode(1920, 1080), "2DPhysics Demoz Nemoz"), 1 / 60.0);
 
 #pragma region Create Bodies
     ConvexShape shape(std::vector{ Vector2D(0.0, 0.0), Vector2D(-1.0, 2.0), Vector2D(1.0, 3.0), Vector2D(3, 2), Vector2D(3, -2) });
