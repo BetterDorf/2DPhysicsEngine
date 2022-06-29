@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <vector>
 
 class Vector2D
 {
@@ -11,6 +12,7 @@ public:
 	double Y = 0.0;
 
 	static double DotProduct(Vector2D, Vector2D);
+	static double CrossProductMagnitude(Vector2D, Vector2D, Vector2D);
 	// Distance between two vectors (or points represented by vectors)
 	static double Distance(Vector2D, Vector2D);
 

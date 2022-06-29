@@ -1,12 +1,33 @@
 #include "Vector2D.h"
+#include "MathUtils.h"
 
 #include <cmath>
 #include <string>
-#include "MathUtils.h"
 
 double Vector2D::DotProduct(const Vector2D a, const Vector2D b)
 {
 	return a.X * b.X + a.Y * b.Y;
+}
+
+double Vector2D::CrossProductMagnitude(const Vector2D a, const Vector2D b, const Vector2D c)
+{
+	// Utility function to find cross product
+	// of two vectors
+			
+	// Stores coefficient of X
+	const double X1 = b.X - a.X;
+
+	// Stores coefficient of Y
+	const double Y1 = b.Y - a.X;
+
+	// Stores coefficient of X
+	const double X2 = c.X - a.X;
+
+	// Stores coefficient of Y
+	const double Y2 = c.Y - a.Y;
+
+	// Return cross product
+	return (X1 * Y2 - Y1 * X2);
 }
 
 double Vector2D::Distance(const Vector2D a, const Vector2D b)

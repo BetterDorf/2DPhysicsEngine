@@ -2,11 +2,14 @@
 
 PolygonShape::PolygonShape(std::vector<Vector2D> points) : points_(std::move(points))
 {
+	//Make sure our center corresponds with the center of the rigibody.
 	RepositionCenter();
 }
 
-Vector2D PolygonShape::GetFurthestPoint(const Vector2D dir) const
+Vector2D PolygonShape::GetFurthestPoint(Vector2D dir) const
 {
+	dir = dir.Normalize();
+
 	double bestDot = 0.0;
 	int bestId = 0;
 
@@ -23,6 +26,44 @@ Vector2D PolygonShape::GetFurthestPoint(const Vector2D dir) const
 	}
 
 	return points_[bestId];
+}
+
+std::vector<Vector2D> PolygonShape::GetEdges(const int pointId)
+{
+	auto pointsInEdge = std::vector<Vector2D>();
+
+	const int size = static_cast<int>(points_.size());
+
+	pointsInEdge.emplace_back(points_[(pointId - 1 + size) % size]);
+	pointsInEdge.emplace_back(points_[pointId]); 
+	pointsInEdge.emplace_back(points_[(pointId + 1 + size) % size]);
+
+	return pointsInEdge;
+}
+
+std::vector<Vector2D> PolygonShape::GetEdges(const Vector2D point)
+{
+	return GetEdges(GetPointId(point));
+}
+
+int PolygonShape::GetPointId(const Vector2D point) const
+{
+	int id = 0;
+
+	//Find the point
+	for (auto element : points_)
+	{
+		if (point == element)
+		{
+			//Stop searching for point
+			break;
+		}
+
+		//Increment each loop
+		id++;
+	}
+
+	return id;
 }
 
 void PolygonShape::InsertPoint(const Vector2D point, const int id)
