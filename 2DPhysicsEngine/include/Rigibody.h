@@ -48,6 +48,8 @@ private:
 	long id_{};
 
 	Vector2D position_ = Vector2D(0.0, 0.0);
+	//Angle in radians
+	double rotation = 0.0;
 	Vector2D velocity_ = Vector2D(0.0, 0.0);
 
 	double mass_ = 1.0;

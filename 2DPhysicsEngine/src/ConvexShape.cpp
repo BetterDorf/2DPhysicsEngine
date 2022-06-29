@@ -81,7 +81,7 @@ void ConvexShape::ConvertToConvex()
 {
 	auto newPointsSet = std::vector<Vector2D>();
 
-	//Find left-most point (since it's going to be necessaraly a part of our new shape)
+	//Find left-most point (since it's going to be necesseraly a part of our new shape as it's on the very edge)
 	double bestX = INFINITY;
 	int firstPivotId = 0;
 	int curId = 0;
@@ -96,7 +96,11 @@ void ConvexShape::ConvertToConvex()
 		curId++;
 	}
 
-	//rotate around pivot and select the first point when rotating clockwise untile we've made a full loop
+	//Select the first point that we would find if we were drawing an infinite segment from our pivot
+	//Rotating clockwise, the next pivot is the one with the smallest angle to our initial direction
+	//We add each time the pivots to the list of points that constitute our convex shape as they lay on the outer edge.
+	//We repeat this process until we're back at our initial point which closes our shape.
+	//i.e we've made a complete loop with our direction vector
 	int curPivotId = firstPivotId;
 	int nextPivotId = 0;
 	Vector2D curDirection(-1.0, 0.0);
@@ -126,7 +130,7 @@ void ConvexShape::ConvertToConvex()
 		//Change pivot
 		curDirection = points_[nextPivotId] - points_[curPivotId];
 		curPivotId = nextPivotId;
-	} while (nextPivotId != firstPivotId);
+	} while (nextPivotId != firstPivotId); //Check if we've finished finding points 
 
 	points_ = newPointsSet;
 }
