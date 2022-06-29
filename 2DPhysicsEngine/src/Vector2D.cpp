@@ -9,25 +9,24 @@ double Vector2D::DotProduct(const Vector2D a, const Vector2D b)
 	return a.X * b.X + a.Y * b.Y;
 }
 
-double Vector2D::CrossProductMagnitude(const Vector2D a, const Vector2D b, const Vector2D c)
+double Vector2D::CrossProduct(const Vector2D a, const Vector2D b)
 {
-	// Utility function to find cross product
-	// of two vectors
-			
-	// Stores coefficient of X
-	const double X1 = b.X - a.X;
+	return a.X * b.Y - a.Y * b.X;
+}
 
-	// Stores coefficient of Y
-	const double Y1 = b.Y - a.X;
+Vector2D Vector2D::CrossProduct(const double a, const Vector2D b)
+{
+	return Vector2D(-a * b.Y, a * b.X);
+}
 
-	// Stores coefficient of X
-	const double X2 = c.X - a.X;
+Vector2D Vector2D::CrossProduct(const Vector2D a, const double b)
+{
+	return Vector2D(a.Y * b, - a.X * b);
+}
 
-	// Stores coefficient of Y
-	const double Y2 = c.Y - a.Y;
-
-	// Return cross product
-	return (X1 * Y2 - Y1 * X2);
+Vector2D Vector2D::TripleProduct(const Vector2D a, const Vector2D b, const Vector2D c)
+{
+	return CrossProduct(CrossProduct(a, b), c);
 }
 
 double Vector2D::Distance(const Vector2D a, const Vector2D b)

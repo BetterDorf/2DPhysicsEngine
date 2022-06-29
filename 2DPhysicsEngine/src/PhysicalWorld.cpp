@@ -27,10 +27,11 @@ void PhysicalWorld::Tick(const double timeElapsed)
 			const auto rbPtr1 = iter1->second;
 			const auto rbPtr2 = iter2->second;
 
-			if (rbPtr1 != rbPtr2 && Collisions::CheckCollision(rbPtr1, rbPtr2).HasCollided)
+			if (rbPtr1 != rbPtr2 && Collisions::CheckCollision(rbPtr1, rbPtr2))
 			{
-				Collisions::SolveOverlap(rbPtr1, rbPtr2);
-				Collisions::SolveVelocities(rbPtr1, rbPtr2);
+				const Collisions::ColData data = Collisions::MakeColData(rbPtr1, rbPtr2);
+				Collisions::SolveOverlap(data);
+				Collisions::SolveVelocities(data);
 			}
 		}
 	}

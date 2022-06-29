@@ -11,6 +11,7 @@ public:
 	Entity(std::unique_ptr<Rigibody>, std::unique_ptr<sf::RectangleShape>);
 	Entity(std::unique_ptr<Rigibody>, std::unique_ptr<sf::Sprite>);
 	Entity(std::unique_ptr<Rigibody>, std::unique_ptr<sf::Drawable>, sf::Vector2f centerOffset);
+	explicit Entity(std::unique_ptr<Rigibody>);
 
 	[[nodiscard]] Rigibody& GetRigibody() const { return *rbPtr_; }
 

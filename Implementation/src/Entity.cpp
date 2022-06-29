@@ -1,11 +1,34 @@
 #include "Entity.h"
 #include "SFMLUtils.h"
 #include "World.h"
+#include "ConvexShape.h"
 
 Entity::Entity(std::unique_ptr<Rigibody> rigibody, std::unique_ptr<sf::Drawable> drawable, const sf::Vector2f centerOffset)
 : id_(curId++), rbPtr_(std::move(rigibody)), visualPtr_(std::move(drawable))
 {
 	this->setOrigin(centerOffset);
+}
+
+Entity::Entity(std::unique_ptr<Rigibody> rigibody): id_(curId++), rbPtr_(std::move(rigibody))
+{
+	switch (rbPtr_->GetCollider()->GetShapeType())
+	{
+		case PhysicShape::ShapeType::None: break;
+		case PhysicShape::ShapeType::Circle: 
+			visualPtr_ = std::make_unique<sf::CircleShape>(rbPtr_->GetCollider()->GetBoundingCircleRad());
+			break;
+		case PhysicShape::ShapeType::Polygon:
+			const auto shape = dynamic_cast<ConvexShape*>(rbPtr_->GetCollider());
+			int pointCount = static_cast<int>(shape->GetPoints().size());
+			sf::ConvexShape visualShape(pointCount);
+			for(int i = 0; i < pointCount; i++)
+			{
+				visualShape.setPoint(i, SFMLUtils::vector2ToSFML(shape->GetPoints()[i]));
+			}
+			visualPtr_ = std::make_unique<sf::ConvexShape>(visualShape);
+			break;
+	}
+	
 }
 
 Entity::Entity(std::unique_ptr<Rigibody> rigibody, std::unique_ptr<sf::CircleShape> drawable)

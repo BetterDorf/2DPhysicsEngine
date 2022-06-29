@@ -16,4 +16,14 @@ namespace SFMLUtils
 
 		return newPos;
 	}
+
+	sf::Vector2f vector2ToSFML(const Vector2D v)
+	{
+		return sf::Vector2f(static_cast<float>(v.X * PIXELSTOMETERSRATIO), static_cast<float>(v.Y * -PIXELSTOMETERSRATIO));
+	}
+
+	Vector2D sfVectorToVector2(const sf::Vector2f v)
+	{
+		return Vector2D(static_cast<double>(v.x), -static_cast<double>(v.y)) / PIXELSTOMETERSRATIO;
+	}
 }

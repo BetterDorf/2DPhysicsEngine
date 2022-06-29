@@ -12,8 +12,29 @@ public:
 	double Y = 0.0;
 
 	static double DotProduct(Vector2D, Vector2D);
-	static double CrossProductMagnitude(Vector2D, Vector2D, Vector2D);
-	// Distance between two vectors (or points represented by vectors)
+	/// <summary>
+	/// Calculate the cross product of two vectors
+	/// </summary>
+	/// <param name="a">first vector</param>
+	/// <param name="b">second vector</param>
+	/// <returns>Gives back the z value of the perpendicular vector</returns>
+	static double CrossProduct(Vector2D a, Vector2D b);
+	/// <summary>
+	/// Calculate the vector that is the cross product between a vector in the plane and a vector perpendicular to the plane
+	/// </summary>
+	/// <param name="a">the z component of the perpendicular vector, other values are 0</param>
+	/// <param name="b">the vector in the plane</param>
+	/// <returns>a vector in the plane</returns>
+	static Vector2D CrossProduct(double a, Vector2D b);
+	/// <summary>
+	/// Calculate the vector that is the cross product between a vector in the plane and a vector perpendicular to the plane
+	/// </summary>
+	/// <param name="a">the vector in the plane</param>
+	/// <param name="b">the z component of the perpendicular vector, other values are 0</param>
+	/// <returns>a vector in the plane</returns>
+	static Vector2D CrossProduct(Vector2D a, double b);
+	static Vector2D TripleProduct(Vector2D a, Vector2D b, Vector2D c);
+	// Distance between two vectors (or rather, points represented by vectors)
 	static double Distance(Vector2D, Vector2D);
 
 	void Set(double x, double y);

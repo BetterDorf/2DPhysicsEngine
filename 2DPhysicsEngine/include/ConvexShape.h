@@ -24,5 +24,9 @@ public:
 private:
 	std::vector<Vector2D> points_;
 
+	/// <summary>
+	/// Move all points so that the center of gravity is at the local origin (0, 0)
+	///	Also recalculates the boundingCircleRadius
+	/// </summary>
 	void RepositionCenter();
 };

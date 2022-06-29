@@ -147,4 +147,13 @@ void ConvexShape::RepositionCenter()
 	{
 		point -= center;
 	}
+
+	//Recalculate the boundingCircle
+	double furthest = 0.0;
+	for (auto element : points_)
+	{
+		if (const double distance = element.Magnitude(); distance > furthest)
+			furthest = distance;
+	}
+	boundingCircleRadius_ = furthest;
 }
