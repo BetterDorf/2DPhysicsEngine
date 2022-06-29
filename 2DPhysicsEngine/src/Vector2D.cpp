@@ -78,6 +78,21 @@ double Vector2D::AngleDegWith(const Vector2D other) const
 	return mathUtils::radToDeg(AngleRadWith(other));
 }
 
+double Vector2D::AngleClockwiseWith(const Vector2D other) const
+{
+	const Vector2D v1 = *this;
+	const Vector2D v2 = other;
+
+	//dot product between[x1, y1] and [x2, y2]
+	const double dot = v1.X * v2.X + v1.Y * v2.Y;
+	//determinant
+	const double det = v1.X * v2.Y - v1.Y * v2.X;
+
+	const double angle =std::fmod(mathUtils::radToDeg(atan2(det, dot)) + 360.0, 360.0);
+
+	return angle;
+}
+
 bool Vector2D::IsPerpendicular(const Vector2D other) const
 {
 	return mathUtils::isApproximatelyEqual(DotProduct(*this, other), 0.0);

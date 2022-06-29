@@ -4,10 +4,10 @@
 
 #include <vector>
 
-class PolygonShape final : public PhysicShape
+class ConvexShape final : public PhysicShape
 {
 public:
-	explicit PolygonShape(std::vector<Vector2D>);
+	explicit ConvexShape(std::vector<Vector2D>);
 
 	[[nodiscard]] ShapeType GetShapeType() const override { return ShapeType::Polygon; }
 

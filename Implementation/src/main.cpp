@@ -1,7 +1,7 @@
 #include <iostream>
 #include "PhysicalWorld.h"
 #include "CircleShape.h"
-#include "PolygonShape.h"
+#include "ConvexShape.h"
 #include "SFMLUtils.h"
 #include "World.h"
 
@@ -25,12 +25,13 @@ int main()
 #pragma endregion
 
     //Testing polygonal shapes
-    PolygonShape shape(std::vector {Vector2D(12.0, 13.0), Vector2D(7.0, 17.0), Vector2D( 10.0, 10.0),});
+    ConvexShape shape(std::vector {Vector2D(2.0, 3.0), Vector2D(-3.0, 7.0), Vector2D( 0.0, 0.0), Vector2D(8.0, 3.0),
+    Vector2D(2.0, 10.0),Vector2D(2.5, 3.4),Vector2D(-2.0, -3.0) });
     for (auto& element : shape.GetPoints())
     {
         std::cout << element.ToString() << std::endl;
     }
-    std::cout << shape.GetFurthestPoint(Vector2D(-1.0, 0.0)).ToString() << std::endl;
+    //std::cout << shape.GetFurthestPoint(Vector2D(-1.0, 0.0)).ToString() << std::endl;
 
     world.Start();
 

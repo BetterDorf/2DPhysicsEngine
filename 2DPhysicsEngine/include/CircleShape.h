@@ -4,8 +4,8 @@
 class CircleShape final : public PhysicShape
 {
 public:
-	CircleShape() : radius_(0.5) {}
-	explicit CircleShape(const double radius) : radius_(radius) { }
+	explicit CircleShape(const double radius) : radius_(radius) { boundingCircleRadius_ = radius_; }
+	CircleShape() : CircleShape(0.5) {}
 
 	[[nodiscard]] ShapeType GetShapeType() const override { return ShapeType::Circle; }
 
