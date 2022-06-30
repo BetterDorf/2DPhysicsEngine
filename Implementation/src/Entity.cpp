@@ -14,19 +14,26 @@ Entity::Entity(std::unique_ptr<Rigibody> rigibody): id_(curId++), rbPtr_(std::mo
 	switch (rbPtr_->GetCollider()->GetShapeType())
 	{
 		case PhysicShape::ShapeType::None: break;
-		case PhysicShape::ShapeType::Circle: 
-			visualPtr_ = std::make_unique<sf::CircleShape>(rbPtr_->GetCollider()->GetBoundingCircleRad());
+		case PhysicShape::ShapeType::Circle:
+		{
+			auto sfmlRadius = static_cast<float>(rbPtr_->GetCollider()->GetBoundingCircleRad() * SFMLUtils::PIXELSTOMETERSRATIO);
+			visualPtr_ = std::make_unique<sf::CircleShape>(sfmlRadius);
+			this->setOrigin(sf::Vector2f(sfmlRadius, sfmlRadius));
 			break;
+		}
 		case PhysicShape::ShapeType::Polygon:
+		{
 			const auto shape = dynamic_cast<ConvexShape*>(rbPtr_->GetCollider());
 			int pointCount = static_cast<int>(shape->GetPoints().size());
 			sf::ConvexShape visualShape(pointCount);
-			for(int i = 0; i < pointCount; i++)
+			for (int i = 0; i < pointCount; i++)
 			{
 				visualShape.setPoint(i, SFMLUtils::vector2ToSFML(shape->GetPoints()[i]));
 			}
+			this->setOrigin(-visualShape.getOrigin());
 			visualPtr_ = std::make_unique<sf::ConvexShape>(visualShape);
 			break;
+		}
 	}
 	
 }
@@ -49,7 +56,8 @@ Entity::Entity(std::unique_ptr<Rigibody> rigibody, std::unique_ptr<sf::Sprite> d
 	: id_(curId++), rbPtr_(std::move(rigibody)), visualPtr_(std::move(drawable))
 {
 	const auto spritePtr = dynamic_cast<sf::Sprite*>(visualPtr_.get());
-	const auto dimensions = sf::Vector2f(spritePtr->getTextureRect().height, spritePtr->getTextureRect().width);
+	const auto dimensions = sf::Vector2f(static_cast<float>(spritePtr->getTextureRect().height),
+		static_cast<float>(spritePtr->getTextureRect().width));
 	this->setOrigin(dimensions / 2.0f);
 }
 

@@ -48,6 +48,7 @@ public:
 	[[nodiscard]] double AngleRadWith(Vector2D other) const;
 	[[nodiscard]] double AngleDegWith(Vector2D other) const;
 	[[nodiscard]] double AngleClockwiseWith(Vector2D other) const;
+	[[nodiscard]] double AngleRadWithOAxis() const;
 	[[nodiscard]] bool IsPerpendicular(Vector2D other) const;
 
 	[[nodiscard]] std::string ToString() const;

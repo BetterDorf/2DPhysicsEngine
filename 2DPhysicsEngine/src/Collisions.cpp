@@ -1,44 +1,50 @@
 #include "Collisions.h"
+
 #include "CircleShape.h"
+#include "MathUtils.h"
 
 namespace Collisions
 {
-	ColData MakeColData(Rigibody* rb1, Rigibody* rb2)
+	ColData CheckCollision(Rigibody* rb1, Rigibody* rb2)
 	{
-		return ColData(rb1, rb2);
-	}
+		ColData colData(rb1, rb2);
 
-	bool CheckCollision(const Rigibody* rb1, const Rigibody* rb2)
-	{
 		if (rb1->GetCollider()->GetShapeType() == PhysicShape::ShapeType::Circle &&
 			rb2->GetCollider()->GetShapeType() == PhysicShape::ShapeType::Circle)
 		{
-			return CheckCollisionCircle(rb1, rb2);
+			CheckCollisionCircle(colData);
 		}
 		else
 		{
 			//Check the bounding circle of the two shapes
-			if (CheckCollisionCircle(rb1, rb2))
-				return CheckCollisionGJK(rb1, rb2);
-			return false;
+			if (CheckCollisionCircle(colData); colData.HasCollided)
+				CheckCollisionGJK(colData);
 		}
 
+		return colData;
 	}
 
-	bool CheckCollisionCircle(const Rigibody* rb1, const Rigibody* rb2)
+	void CheckCollisionCircle(ColData& colData)
 	{
+		const Rigibody* rb1 = colData.A;
+		const Rigibody* rb2 = colData.B;
+
 		const double distanceBetweenCenters = (rb1->GetPos() - rb2->GetPos()).Magnitude();
 
 		if (distanceBetweenCenters <= rb1->GetCollider()->GetBoundingCircleRad() + rb2->GetCollider()->GetBoundingCircleRad())
 		{
-			return true;
+			colData.HasCollided = true;
+			return;
 		}
 
-		return false;
+		colData.HasCollided = false;
 	}
 
-	bool CheckCollisionGJK(const Rigibody* rb1, const Rigibody* rb2)
+	void CheckCollisionGJK(ColData& colData)
 	{
+		const Rigibody* rb1 = colData.A;
+		const Rigibody* rb2 = colData.B;
+
 		//All points used in this algorithm are put into their world coordinates counterpart
 
 		//Get starting direction
@@ -58,14 +64,19 @@ namespace Collisions
 			//Shapes don't intersect if next support point doesn't pass the origin
 			if (Vector2D::DotProduct(A, dir) < 0.0)
 			{
-				return false;
+				colData.HasCollided = false;
+				return;
 			}
 
 			simplex.emplace_back(A);
 
 			//Check if we have the origin in our simplex
 			if (GJKHandleSimplex(simplex, dir))
-				return true;
+			{
+				colData.HasCollided = true;
+				colData.Simplex = simplex;
+				return;
+			}
 		}
 	}
 
@@ -86,7 +97,7 @@ namespace Collisions
 			const Vector2D AB = (B - A).Normalize();
 			const Vector2D AO = (Vector2D(0, 0) - A).Normalize();
 
-			const Vector2D ABPerp = Vector2D::TripleProduct(AB, AO, AB);
+			const Vector2D ABPerp = Vector2D::TripleProduct(AB, AO, AB).Normalize();
 			dir = ABPerp;
 			return false;
 		}
@@ -101,8 +112,8 @@ namespace Collisions
 			const Vector2D AC = (C - A).Normalize();
 			const Vector2D AO = (Vector2D(0, 0) - A).Normalize();
 
-			const Vector2D ABPerp = Vector2D::TripleProduct(AC, AB, AB);
-			const Vector2D ACPerp = Vector2D::TripleProduct(AB, AC, AC);
+			const Vector2D ABPerp = Vector2D::TripleProduct(AC, AB, AB).Normalize();
+			const Vector2D ACPerp = Vector2D::TripleProduct(AB, AC, AC).Normalize();
 
 			//Check region AB for origin
 			if (Vector2D::DotProduct(ABPerp, AO) > 0.0)
@@ -127,32 +138,39 @@ namespace Collisions
 		}
 	}
 
-	void SolveOverlap(ColData col)
+	void SolveOverlap(const ColData& data)
 	{
 		
 	}
 
-	void SolveVelocities(const ColData data)
+	void SolveVelocities(const ColData& data)
 	{
 		Rigibody* rb1 = data.A;
 		Rigibody* rb2 = data.B;
 
-		//Find the normal and tangent vector of the collision
-		const Vector2D normalVector = (rb2->GetPos() - rb1->GetPos()).Normalize();
-		const Vector2D tangVector = normalVector.GetPerpendicularVector(true);
+		const double v1 = rb1->GetVelocity().Magnitude();
+		const double v2 = rb2->GetVelocity().Magnitude();
 
-		//Calculate projections of V1 on normal and tangent
-		const double V1n = (normalVector.X * rb1->GetVelocity().X + normalVector.Y * rb1->GetVelocity().Y);
-		const double V1t = (tangVector.X * rb1->GetVelocity().X + tangVector.Y * rb1->GetVelocity().Y);
+		const double m1 = rb1->GetMass();
+		const double m2 = rb2->GetMass();
 
-		//Calculate projections of V2 on normal and tangent
-		const double V2n = (normalVector.X * rb2->GetVelocity().X + normalVector.Y * rb2->GetVelocity().Y);
-		const double V2t = (tangVector.X * rb2->GetVelocity().X + tangVector.Y * rb2->GetVelocity().Y);
+		const double theta1 = rb1->GetVelocity().AngleRadWithOAxis();
+		const double theta2 = rb2->GetVelocity().AngleRadWithOAxis();
 
-		//Set velocities according to their elastic collisions on each axis
-		rb1->SetVelocity(Vector2D(normalVector.X * V2n + tangVector.X * V1t,
-			normalVector.Y * V2n + tangVector.Y * V1t));
-		rb2->SetVelocity(Vector2D(normalVector.X * V1n + tangVector.X * V2t,
-			normalVector.Y * V1n + tangVector.Y * V2t));
+		//TEMPORARY SOLUTION UNTIL WE HAVE CONTACT MANIFOLD
+		const double phi = (rb2->GetPos() - rb1->GetPos()).AngleRadWithOAxis();
+
+		const double v1fx = ((v1 * std::cos(theta1 - phi) * (m1 - m2) + 2 * m2 * v2 * std::cos(theta2 - phi)) / (m1 + m2))
+			* std::cos(phi) + v1 * std::sin(theta1 - phi) * std::cos(phi + mathUtils::pi / 2);
+		const double v1fy = ((v1 * std::cos(theta1 - phi) * (m1 - m2) + 2 * m2 * v2 * std::cos(theta2 - phi)) / (m1 + m2))
+			* std::sin(phi) + v1 * std::sin(theta1 - phi) * std::sin(phi + mathUtils::pi / 2);
+
+		const double v2fx = ((v2 * std::cos(theta2 - phi) * (m2 - m1) + 2 * m1 * v1 * std::cos(theta1 - phi)) / (m2 + m1))
+			* std::cos(phi) + v2 * std::sin(theta2 - phi) * std::cos(phi + mathUtils::pi / 2);
+		const double v2fy = ((v2 * std::cos(theta2 - phi) * (m2 - m1) + 2 * m1 * v1 * std::cos(theta1 - phi)) / (m2 + m1))
+			* std::sin(phi) + v2 * std::sin(theta2 - phi) * std::sin(phi + mathUtils::pi / 2);
+
+		rb1->SetVelocity(Vector2D(v1fx, v1fy));
+		rb2->SetVelocity(Vector2D(v2fx, v2fy));
 	}
 }

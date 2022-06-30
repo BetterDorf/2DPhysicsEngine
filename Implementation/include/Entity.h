@@ -15,7 +15,7 @@ public:
 
 	[[nodiscard]] Rigibody& GetRigibody() const { return *rbPtr_; }
 
-	bool flaggedForRemoval = false;
+	void AutoSetOrigin();
 
 	void UpdateGraphicsPosition(Vector2D cameraPos);
 

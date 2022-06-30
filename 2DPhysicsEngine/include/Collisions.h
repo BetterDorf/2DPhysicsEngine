@@ -12,14 +12,17 @@ namespace Collisions
 
 		Rigibody* A;
 		Rigibody* B;
+
+		PhysicShape::ShapeType CollisionType = PhysicShape::ShapeType::None;
+		bool HasCollided = false;
+
+		std::vector<Vector2D> Simplex;
 	};
 
-	ColData MakeColData(Rigibody* rb1, Rigibody* rb2);
+	ColData CheckCollision(Rigibody* rb1, Rigibody* rb2);
+	void CheckCollisionCircle(ColData&);
 
-	bool CheckCollision(const Rigibody* rb1, const Rigibody* rb2);
-	bool CheckCollisionCircle(const Rigibody* rb1, const Rigibody* rb2);
-
-	bool CheckCollisionGJK(const Rigibody* rb1, const Rigibody* rb2);
+	void CheckCollisionGJK(ColData&);
 	Vector2D GJKSupportFunction(const Rigibody* rb1, const Rigibody* rb2, Vector2D dir);
 	/// <summary>
 	/// Check if the given simplex contains the origin and transforms it according to the GJK algorithm
@@ -30,8 +33,6 @@ namespace Collisions
 	/// <returns>Wether the origin is contained in the simplex</returns>
 	bool GJKHandleSimplex(std::vector<Vector2D>& simplex, Vector2D& dir);
 
-	void SolveOverlap(ColData);
-	void SolveVelocities(ColData);
-
-	
+	void SolveOverlap(const ColData&);
+	void SolveVelocities(const ColData&);
 }

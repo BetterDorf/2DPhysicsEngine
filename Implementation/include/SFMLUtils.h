@@ -5,6 +5,7 @@
 namespace SFMLUtils
 {
 	constexpr double PIXELSTOMETERSRATIO = 50.0;
+	constexpr double MAXTIMESTEP = 1.0 / 10.0;
 
 	sf::Vector2f WorldToScreenPos(Vector2D worldPos, Vector2D cameraPos);
 	Vector2D ScreenToWorldPos(sf::Vector2f screenPos, Vector2D cameraPos);

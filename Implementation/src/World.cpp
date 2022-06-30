@@ -24,9 +24,14 @@ void World::Start()
 	while (window_->isOpen())
 	{
         sf::Time elapsed = clock.restart();
-        collectedEllapse += elapsed;
 
 		Update(static_cast<double>(elapsed.asSeconds()));
+
+        if (static_cast<double>(elapsed.asSeconds()) > SFMLUtils::MAXTIMESTEP)
+            continue;
+
+        collectedEllapse += elapsed;
+
 
         if (static_cast<double>((collectedEllapse - lastPhysicFrame).asSeconds()) > physicsTimestep_)
         {
