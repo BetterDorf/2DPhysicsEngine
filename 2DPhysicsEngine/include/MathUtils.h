@@ -9,4 +9,6 @@ namespace mathUtils
 
 	double radToDeg(double rad);
 	double degToRad(double deg);
+
+	double signnum_c(double x);
 }

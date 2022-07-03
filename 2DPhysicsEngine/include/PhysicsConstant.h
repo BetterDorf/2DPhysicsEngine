@@ -7,4 +7,6 @@ namespace PhysicsConstants
 	static constexpr double gravVertical = -9.806;
 
 	constexpr Vector2D GRAVITY_ACCELERATION(gravHorizontal, gravVertical);
+
+	static constexpr int maxBodiesInRegion = 5;
 }

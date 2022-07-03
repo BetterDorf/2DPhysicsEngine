@@ -27,8 +27,8 @@ public:
 	void AddAcceleration(Vector2D acceleration);
 	void AddAccelerationContinuous(Vector2D acceleration, double time);
 
-	Vector2D LocalToWorldPos(Vector2D) const;
-	Vector2D WorldToLocalPos(Vector2D) const;
+	[[nodiscard]] Vector2D LocalToWorldPos(Vector2D) const;
+	[[nodiscard]] Vector2D WorldToLocalPos(Vector2D) const;
 
 	[[nodiscard]] long GetId() const { return id_; }
 	[[nodiscard]] Vector2D GetPos() const { return position_; }
@@ -44,8 +44,8 @@ public:
 	void SetCollider(std::unique_ptr<PhysicShape> newCol) { colliderPtr_.reset(); colliderPtr_ = std::move(newCol); }
 
 private:
-	inline static long CurId = 0;
-	long id_{};
+	inline static unsigned long CurId = 0;
+	unsigned long id_;
 
 	Vector2D position_ = Vector2D(0.0, 0.0);
 	//Angle in radians

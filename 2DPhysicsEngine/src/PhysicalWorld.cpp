@@ -1,11 +1,14 @@
 #include "PhysicalWorld.h"
 
+
 #include "PhysicsConstant.h"
 #include "Collisions.h"
+#include "RegionNode.h"
 
+#include <algorithm>
 #include <ranges>
 
-std::map<long, Rigibody*> PhysicalWorld::rigibodies_ = std::map<long, Rigibody*>{};
+std::unordered_map<unsigned long, Rigibody*> PhysicalWorld::rigibodies_ = std::unordered_map<unsigned long, Rigibody*>{};
 
 void PhysicalWorld::AddRb(Rigibody* rb)
 {
@@ -20,22 +23,55 @@ void PhysicalWorld::RemoveRb(const long id)
 void PhysicalWorld::Tick(const double timeElapsed)
 {
 	//Check Collisions
-	for (auto iter1 = rigibodies_.begin() ; iter1 != rigibodies_.end() ; ++iter1)
-	{
-		for (auto iter2 = iter1; iter2 != rigibodies_.end(); ++iter2)
-		{
-			const auto rbPtr1 = iter1->second;
-			const auto rbPtr2 = iter2->second;
 
-			if (rbPtr1 == rbPtr2)
+	//Make quad Tree
+	std::unordered_set<Rigibody*> rbs;
+	for (auto rb : rigibodies_ | std::views::values)
+	{
+		rbs.emplace(rb);
+	}
+
+	SpacePartionning::RegionNode baseNode(rbs);
+
+	for (std::unordered_multimap<Rigibody*, Rigibody*> CheckedCollisions; const auto& rbPtr1 : rigibodies_ | std::views::values)
+	{
+		for (auto& rbSet : baseNode.GetBodiesInRegionsInRadius(rbPtr1))
+		{
+			for (auto& rbPtr2 : *rbSet)
 			{
-				continue;
-			}
-			if (const Collisions::ColData data = Collisions::CheckCollision(rbPtr1, rbPtr2); 
-				data.HasCollided)
-			{
-				Collisions::SolveOverlap(data);
-				Collisions::SolveVelocities(data);
+				//Check if collision is with same object
+				if (rbPtr1 == rbPtr2)
+				{
+					continue;
+				}
+				//Check if collision already happened
+				//Make a pair out of the pointers where the first one is the lowest of the two
+				auto pointerPair = rbPtr1 < rbPtr2 ? std::pair<Rigibody*, Rigibody*>(rbPtr1, rbPtr2)
+					                  : std::pair<Rigibody*, Rigibody*>(rbPtr2, rbPtr1);
+				//Leverage the fact that we know that our pair will be stored as { lowest ; highest }
+				auto [fst, snd] = CheckedCollisions.equal_range(pointerPair.first);
+				bool isContained = false;
+				for (auto iterator = fst; iterator != snd; ++iterator)
+				{
+					if (iterator->second == pointerPair.second)
+					{
+						isContained = true;
+						break;
+					}
+				}
+				if (isContained)
+				{
+					continue;
+				}
+				//Add the pair
+				CheckedCollisions.emplace(pointerPair);
+
+				if (const Collisions::ColData data = Collisions::CheckCollision(rbPtr1, rbPtr2);
+					data.HasCollided)
+				{
+					Collisions::SolveOverlap(data);
+					Collisions::SolveVelocities(data);
+				}
 			}
 		}
 	}

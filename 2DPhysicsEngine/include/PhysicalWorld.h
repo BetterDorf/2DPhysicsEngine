@@ -1,7 +1,7 @@
 #pragma once
 #include "Rigibody.h"
 
-#include <map>
+#include <unordered_map>
 
 class PhysicalWorld
 {
@@ -12,5 +12,5 @@ public:
 	static void RemoveRb(long);
 	static void Tick(double timeElapsed);
 private:
-	static std::map<long, Rigibody*> rigibodies_;
+	static std::unordered_map<unsigned long, Rigibody*> rigibodies_;
 };
