@@ -16,7 +16,7 @@ namespace Collisions
 		PhysicShape::ShapeType CollisionType = PhysicShape::ShapeType::None;
 		bool HasCollided = false;
 
-		std::vector<Vector2D> Simplex;
+		Vector2D ColNormal = Vector2D(0,0);
 	};
 
 	ColData CheckCollision(Rigibody* rb1, Rigibody* rb2);
@@ -32,6 +32,9 @@ namespace Collisions
 	/// <param name="dir">Direction to update (will be the next pivot point direction)</param>
 	/// <returns>Wether the origin is contained in the simplex</returns>
 	bool GJKHandleSimplex(std::vector<Vector2D>& simplex, Vector2D& dir);
+
+	//Modify the collision data to add the normal of the collision
+	void GJKGenerateCollisionNormal(std::vector<Vector2D>, ColData&);
 
 	void SolveOverlap(const ColData&);
 	void SolveVelocities(const ColData&);

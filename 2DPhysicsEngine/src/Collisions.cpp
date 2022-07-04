@@ -18,7 +18,9 @@ namespace Collisions
 		{
 			//Check the bounding circle of the two shapes
 			if (CheckCollisionCircle(colData); colData.HasCollided)
+			{
 				CheckCollisionGJK(colData);
+			}
 		}
 
 		return colData;
@@ -30,14 +32,19 @@ namespace Collisions
 		const Rigibody* rb2 = colData.B;
 
 		const double distanceBetweenCenters = (rb1->GetPos() - rb2->GetPos()).Magnitude();
+		const double radiiLength = rb1->GetCollider()->GetBoundingCircleRad() + rb2->GetCollider()->GetBoundingCircleRad();
 
-		if (distanceBetweenCenters <= rb1->GetCollider()->GetBoundingCircleRad() + rb2->GetCollider()->GetBoundingCircleRad())
+		if (distanceBetweenCenters <= radiiLength)
 		{
 			colData.HasCollided = true;
-			return;
-		}
 
-		colData.HasCollided = false;
+			//Add collision normal
+			colData.ColNormal = (rb2->GetPos() - rb1->GetPos()).Normalize() * (radiiLength - distanceBetweenCenters + mathUtils::epsilon);
+		}
+		else
+		{
+			colData.HasCollided = false;
+		}
 	}
 
 	void CheckCollisionGJK(ColData& colData)
@@ -74,7 +81,7 @@ namespace Collisions
 			if (GJKHandleSimplex(simplex, dir))
 			{
 				colData.HasCollided = true;
-				colData.Simplex = simplex;
+				GJKGenerateCollisionNormal(simplex, colData);
 				return;
 			}
 		}
@@ -138,9 +145,67 @@ namespace Collisions
 		}
 	}
 
+	void GJKGenerateCollisionNormal(std::vector<Vector2D> polytope, ColData& data)
+	{
+		//We'll modify the simplex into a polytope in order to find the closest original edge from the origin
+		if(!data.HasCollided)
+			return;
+
+		double minDistance = INFINITY;
+		Vector2D minNormal;
+		int minIndex = 0;
+
+		while (minDistance >= INFINITY)
+		{
+			//Loop over every edge
+			for(int p1 = 0; p1 < static_cast<int>(polytope.size()); p1++)
+			{
+				//Find the normal
+				const int p2 = (p1 + 1) % static_cast<int>(polytope.size());
+				Vector2D edge = polytope[p2] - polytope[p1];
+				Vector2D normal = edge.GetPerpendicularVector().Normalize();
+
+				//Distance to origin
+				double normalDistance = Vector2D::DotProduct(normal, polytope[p1]);
+
+				//Check that we took the correct normal vector and flip it if not
+				if (normalDistance < 0.0)
+				{
+					normalDistance *= -1.0;
+					normal *= -1.0;
+				}
+
+				//Use this distance if it's the best we found yet
+				if (normalDistance < minDistance)
+				{
+					minDistance = normalDistance;
+					minNormal = normal;
+					minIndex = p2;
+				}
+			}
+
+			//Get point in the direction of closest normal
+			Vector2D support = GJKSupportFunction(data.A, data.B, minNormal);
+			const double supportDistance = Vector2D::DotProduct(minNormal, support);
+
+			//If there is a point that gives a different result, we didn't finish our search yet
+			if (!mathUtils::isApproximatelyEqual(supportDistance, minDistance))
+			{
+				minDistance = INFINITY;
+				//Add the suport point in between the two vertex
+				polytope.insert(polytope.begin() + minIndex, support);
+			}
+		}
+
+		//Add a small value to the distance so that the shapes are guaranteed not to be in each other when pushed out
+		data.ColNormal = minNormal * (minDistance + mathUtils::epsilon);
+	}
+
 	void SolveOverlap(const ColData& data)
 	{
-		
+		//Move shapes out of the other
+		data.A->SetPos(data.A->GetPos() - data.ColNormal);
+		data.B->SetPos(data.B->GetPos() + data.ColNormal);
 	}
 
 	void SolveVelocities(const ColData& data)

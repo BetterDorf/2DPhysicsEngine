@@ -47,6 +47,9 @@ Rigibody::~Rigibody()
 
 void Rigibody::Update(const double time)
 {
+	if (isnan(velocity_.X) || isnan(velocity_.Y))
+		velocity_ = Vector2D();
+
 	position_ += velocity_ * time;
 }
 

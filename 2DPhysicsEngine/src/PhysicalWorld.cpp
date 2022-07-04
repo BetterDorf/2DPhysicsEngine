@@ -25,15 +25,16 @@ void PhysicalWorld::Tick(const double timeElapsed)
 	//Check Collisions
 
 	//Make quad Tree
-	std::unordered_set<Rigibody*> rbs;
-	for (auto rb : rigibodies_ | std::views::values)
+	auto rbs = std::make_unique<std::unordered_set<Rigibody*>>();
+	for (auto& rb : rigibodies_ | std::views::values)
 	{
-		rbs.emplace(rb);
+		rbs->emplace(rb);
 	}
 
-	SpacePartionning::RegionNode baseNode(rbs);
+	SpacePartionning::RegionNode baseNode(std::move(rbs));
+	std::unordered_multimap<Rigibody*, Rigibody*> CheckedCollisions;
 
-	for (std::unordered_multimap<Rigibody*, Rigibody*> CheckedCollisions; const auto& rbPtr1 : rigibodies_ | std::views::values)
+	for (const auto& rbPtr1 : rigibodies_ | std::views::values)
 	{
 		for (auto& rbSet : baseNode.GetBodiesInRegionsInRadius(rbPtr1))
 		{
@@ -66,10 +67,10 @@ void PhysicalWorld::Tick(const double timeElapsed)
 				//Add the pair
 				CheckedCollisions.emplace(pointerPair);
 
-				if (const Collisions::ColData data = Collisions::CheckCollision(rbPtr1, rbPtr2);
+				if (Collisions::ColData data = Collisions::CheckCollision(rbPtr1, rbPtr2);
 					data.HasCollided)
 				{
-					Collisions::SolveOverlap(data);
+					//Collisions::SolveOverlap(data);
 					Collisions::SolveVelocities(data);
 				}
 			}

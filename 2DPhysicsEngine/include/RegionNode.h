@@ -9,7 +9,7 @@ namespace SpacePartionning
 	class RegionNode
 	{
 	public:
-		explicit RegionNode(std::unordered_set<Rigibody*> inRegion);
+		explicit RegionNode(std::unique_ptr<std::unordered_set<Rigibody*>> inRegion);
 
 		[[nodiscard]] bool HasSplit() const { return hasSplit_; }
 		[[nodiscard]] Vector2D SplitPoint() const { return splitPoint_; }
@@ -23,9 +23,9 @@ namespace SpacePartionning
 		bool hasSplit_ = false;
 
 		Vector2D splitPoint_;
-		std::unordered_set<Rigibody*> bodiesInRegion_;
+		std::unique_ptr<std::unordered_set<Rigibody*>> bodiesInRegion_;
 
-		[[nodiscard]] std::unordered_set<Rigibody*>* BodiesInRegion() { return &bodiesInRegion_; }
+		[[nodiscard]] std::unordered_set<Rigibody*>* BodiesInRegion() const { return &*bodiesInRegion_; }
 
 		void TrySplit();
 		void Split();

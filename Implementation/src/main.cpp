@@ -8,23 +8,37 @@ int main()
     World world(std::make_unique<sf::RenderWindow>(sf::VideoMode(1920, 1080), "2DPhysics Demoz Nemoz"), 1 / 60.0);
 
 #pragma region Create Bodies
-    ConvexShape shape(std::vector{ Vector2D(0.0, 0.0), Vector2D(-1.0, 2.0), Vector2D(1.0, 3.0), Vector2D(3, 2), Vector2D(3, -2) });
-    ConvexShape shape2(std::vector{ Vector2D(-1.0, 3.0),Vector2D(1.0, 4.0),Vector2D(0.0, 0.0), Vector2D(3.0, 3.0) });
-    CircleShape shape3(0.2);
-    CircleShape shape4(0.4);
+    srand(time(nullptr));
+    for (int i = 0; i < 500 ; i++)
+    {
+	   /* if (rand() % 2 == 0)
+	    {
+            int edges = rand() % 10;
+            if (edges < 3)
+                edges = 3;
+            std::vector<Vector2D> points;
+            for (int e = 0; e < edges; e++)
+            {
+                points.emplace_back(Vector2D(rand() % 10 - 5, rand() % 10 - 5));
+            }
 
-    auto rb4 = std::make_unique<Rigibody>(std::make_unique<ConvexShape>(shape), Vector2D(0.0, 0.0), Vector2D(0.0, 0.0), 2.0, false, false);
-    auto rb5 = std::make_unique<Rigibody>(std::make_unique<ConvexShape>(shape2), Vector2D(6.0, 0.0), Vector2D(-1.0, 0.0), 1.0, false, false);
-    auto rb6 = std::make_unique<Rigibody>(std::make_unique<CircleShape>(shape3), Vector2D(3.0, 0.0), Vector2D(-0.2, 0.0), 0.2, false, false);
-    auto rb7 = std::make_unique<Rigibody>(std::make_unique<CircleShape>(shape4), Vector2D(2.7, -0.7), Vector2D(0.4, 0.0), 0.05, false, false);
+            ConvexShape shape(points);
+            auto rb = std::make_unique<Rigibody>(std::make_unique<ConvexShape>(shape),
+                Vector2D(rand() % 30 - 15, rand() % 30 - 15), Vector2D(rand() % 10 - 5, rand() % 10 - 5), edges, false, false);
+            world.AddEntity(std::make_unique<Entity>(std::move(rb)));
+	    }
+        else
+        {*/
+        double rad = rand() % 5 + 0.1;
+            auto rb = std::make_unique<Rigibody>(std::make_unique<CircleShape>(rad),
+                Vector2D(rand() % 30 - 15, rand() % 30 - 15), Vector2D(rand() % 10 - 5, rand() % 10 - 5), rad, false, false);
+            world.AddEntity(std::make_unique<Entity>(std::move(rb)));
+        //}
 
-    /*world.AddEntity(std::make_unique<Entity>(std::move(rb), std::make_unique<sf::CircleShape>(SFMLUtils::PIXELSTOMETERSRATIO * 0.5)));
-    world.AddEntity(std::make_unique<Entity>(std::move(rb2), std::make_unique<sf::CircleShape>(SFMLUtils::PIXELSTOMETESRATIO * 0.5)));
-    world.AddEntity(std::make_unique<Entity>(std::move(rb3), std::make_unique<sf::CircleShape>(SFMLUtils::PIXELSTOMETERSRATIO * 0.5)));*/
-    world.AddEntity(std::make_unique<Entity>(std::move(rb4)));
-    world.AddEntity(std::make_unique<Entity>(std::move(rb5)));
-    world.AddEntity(std::make_unique<Entity>(std::move(rb6)));
-    world.AddEntity(std::make_unique<Entity>(std::move(rb7)));
+        std::cout << "made shape" << std::endl;
+    }
+
+    
 #pragma endregion
 
     //Testing polygonal shapes

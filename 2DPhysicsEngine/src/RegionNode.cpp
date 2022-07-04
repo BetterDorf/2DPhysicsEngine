@@ -3,10 +3,13 @@
 #include "PhysicsConstant.h"
 #include "MathUtils.h"
 
+#include <iostream>
+
 #include <ranges>
+#include <string>
 #include <utility>
 
-SpacePartionning::RegionNode::RegionNode(std::unordered_set<Rigibody*> inRegion) :
+SpacePartionning::RegionNode::RegionNode(std::unique_ptr<std::unordered_set<Rigibody*>> inRegion) :
 bodiesInRegion_(std::move(inRegion))
 {
 	TrySplit();
@@ -52,7 +55,7 @@ std::unordered_set<std::unordered_set<Rigibody*>*> SpacePartionning::RegionNode:
 	else
 	{
 		//We don't have subregions so we just add our own bodylist
-		possibleCollisionBodies.emplace(&bodiesInRegion_);
+		possibleCollisionBodies.emplace(bodiesInRegion_.get());
 	}
 
 	return possibleCollisionBodies;
@@ -60,7 +63,7 @@ std::unordered_set<std::unordered_set<Rigibody*>*> SpacePartionning::RegionNode:
 
 void SpacePartionning::RegionNode::TrySplit()
 {
-	if (static_cast<int>(bodiesInRegion_.size()) <= PhysicsConstants::maxBodiesInRegion)
+	if (static_cast<int>(bodiesInRegion_->size()) <= PhysicsConstants::maxBodiesInRegion)
 	{
 		return;
 	}
@@ -74,47 +77,47 @@ void SpacePartionning::RegionNode::Split()
 
 	//Calculate average of points
 	Vector2D sum;
-	for (const auto& val : bodiesInRegion_)
+	for (const auto& val : *bodiesInRegion_)
 	{
 		sum += val->GetPos();
 	}
 
-	splitPoint_ = sum / static_cast<double>(bodiesInRegion_.size());
+	splitPoint_ = sum / static_cast<double>(bodiesInRegion_->size());
 
 	//Make the new regions
 	//Find the points that belong in them
-	std::unordered_set<Rigibody*> region0Bodies;
-	std::unordered_set<Rigibody*> region1Bodies;
-	std::unordered_set<Rigibody*> region2Bodies;
-	std::unordered_set<Rigibody*> region3Bodies;
+	auto region0Bodies = std::make_unique<std::unordered_set<Rigibody*>>();
+	auto region1Bodies = std::make_unique<std::unordered_set<Rigibody*>>();
+	auto region2Bodies = std::make_unique<std::unordered_set<Rigibody*>>();
+	auto region3Bodies = std::make_unique<std::unordered_set<Rigibody*>>();
 
-	for (const auto& body : bodiesInRegion_)
+	for (auto& body : *bodiesInRegion_)
 	{
 		switch (FindSubregionForBody(body))
 		{
 		case 0:
-			region0Bodies.emplace(body);
+			region0Bodies->emplace(body);
 			break;
 		case 1:
-			region1Bodies.emplace(body);
+			region1Bodies->emplace(body);
 			break;
 		case 2:
-			region2Bodies.emplace(body);
+			region2Bodies->emplace(body);
 			break;
 		case 3:
-			region3Bodies.emplace(body);
+			region3Bodies->emplace(body);
 			break;
 		default:break;
 		}
 	}
 
-	children_.emplace_back(std::make_unique<RegionNode>(region0Bodies));
-	children_.emplace_back(std::make_unique<RegionNode>(region1Bodies));
-	children_.emplace_back(std::make_unique<RegionNode>(region2Bodies));
-	children_.emplace_back(std::make_unique<RegionNode>(region3Bodies));
+	//Clear our unused memory 
+	//bodiesInRegion_.reset();
 
-	//Clear our unused memory
-	bodiesInRegion_.clear();
+	children_.emplace_back(std::make_unique<RegionNode>(std::move(region0Bodies)));
+	children_.emplace_back(std::make_unique<RegionNode>(std::move(region1Bodies)));
+	children_.emplace_back(std::make_unique<RegionNode>(std::move(region2Bodies)));
+	children_.emplace_back(std::make_unique<RegionNode>(std::move(region3Bodies)));
 }
 
 int SpacePartionning::RegionNode::FindSubregionForBody(const Rigibody* body) const
