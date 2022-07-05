@@ -82,7 +82,7 @@ void PhysicalWorld::Tick(const double timeElapsed)
 	{
 		if (rb->UseGravity())
 		{
-			rb->AddAccelerationContinuous(PhysicsConstants::GRAVITY_ACCELERATION, timeElapsed);
+			rb->AddAccelerationContinuous(PhysicsConstants::gravityAcceleration, timeElapsed);
 		}
 
 		rb->Update(timeElapsed);

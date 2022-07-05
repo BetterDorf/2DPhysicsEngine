@@ -15,8 +15,6 @@ public:
 
 	[[nodiscard]] Rigibody& GetRigibody() const { return *rbPtr_; }
 
-	void AutoSetOrigin();
-
 	void UpdateGraphicsPosition(Vector2D cameraPos);
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

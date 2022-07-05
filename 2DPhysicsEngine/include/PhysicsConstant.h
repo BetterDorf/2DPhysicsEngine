@@ -3,10 +3,7 @@
 
 namespace PhysicsConstants
 {
-	static constexpr double gravHorizontal = 0.0;
-	static constexpr double gravVertical = -9.806;
-
-	constexpr Vector2D GRAVITY_ACCELERATION(gravHorizontal, gravVertical);
+	constexpr Vector2D gravityAcceleration(0.0, -9.806);
 
 	static constexpr int maxBodiesInRegion = 5;
 }

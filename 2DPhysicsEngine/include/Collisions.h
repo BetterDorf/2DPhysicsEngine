@@ -13,7 +13,6 @@ namespace Collisions
 		Rigibody* A;
 		Rigibody* B;
 
-		PhysicShape::ShapeType CollisionType = PhysicShape::ShapeType::None;
 		bool HasCollided = false;
 
 		Vector2D ColNormal = Vector2D(0,0);
