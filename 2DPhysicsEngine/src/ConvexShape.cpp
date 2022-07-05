@@ -104,14 +104,20 @@ void ConvexShape::ConvertToConvex()
 	int curPivotId = firstPivotId;
 	int nextPivotId = 0;
 	Vector2D curDirection(-1.0, 0.0);
+	int it = 0;
 	do
 	{
+		if (it++ > 5000)
+			std::cout << "wat";
 		//Compare every point and find next pivot
 		double smallestAngle = INFINITY;
 		
 		for (int id = 0; id < static_cast<int>(points_.size()); id++)
 		{
 			if (id == curPivotId)
+				continue;
+
+			if (points_[id] == points_[curPivotId])
 				continue;
 
 			const Vector2D v1 = curDirection;

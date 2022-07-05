@@ -30,8 +30,8 @@ void PhysicalWorld::Tick(const double timeElapsed)
 	{
 		rbs->emplace(rb);
 	}
-
 	SpacePartionning::RegionNode baseNode(std::move(rbs));
+
 	std::unordered_multimap<Rigibody*, Rigibody*> CheckedCollisions;
 
 	for (const auto& rbPtr1 : rigibodies_ | std::views::values)
@@ -70,7 +70,7 @@ void PhysicalWorld::Tick(const double timeElapsed)
 				if (Collisions::ColData data = Collisions::CheckCollision(rbPtr1, rbPtr2);
 					data.HasCollided)
 				{
-					//Collisions::SolveOverlap(data);
+					Collisions::SolveOverlap(data);
 					Collisions::SolveVelocities(data);
 				}
 			}

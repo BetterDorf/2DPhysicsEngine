@@ -33,7 +33,7 @@ public:
 	[[nodiscard]] long GetId() const { return id_; }
 	[[nodiscard]] Vector2D GetPos() const { return position_; }
 	[[nodiscard]] Vector2D GetVelocity() const { return velocity_; }
-	[[nodiscard]] double GetMass() const { return mass_; }
+	[[nodiscard]] double GetMass() const;
 	[[nodiscard]] PhysicShape* GetCollider() const { return colliderPtr_.get(); }
 	[[nodiscard]] bool IsStatic() const { return isStatic_; }
 	[[nodiscard]] bool UseGravity() const { return useGravity_; }

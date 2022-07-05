@@ -47,7 +47,7 @@ Rigibody::~Rigibody()
 
 void Rigibody::Update(const double time)
 {
-	if (isnan(velocity_.X) || isnan(velocity_.Y))
+	if (_isnan(velocity_.X) || _isnan(velocity_.Y))
 		velocity_ = Vector2D();
 
 	position_ += velocity_ * time;
@@ -93,4 +93,9 @@ Vector2D Rigibody::LocalToWorldPos(const Vector2D local) const
 Vector2D Rigibody::WorldToLocalPos(const Vector2D world) const
 {
 	return world - position_;
+}
+
+double Rigibody::GetMass() const
+{
+	return mass_;
 }

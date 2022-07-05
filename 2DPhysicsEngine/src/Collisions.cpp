@@ -9,7 +9,13 @@ namespace Collisions
 	{
 		ColData colData(rb1, rb2);
 
-		if (rb1->GetCollider()->GetShapeType() == PhysicShape::ShapeType::Circle &&
+		//Bypass normal calculations if center are identical
+		if (rb1->GetPos() == rb2->GetPos())
+		{
+			colData.HasCollided = true;
+			colData.ColNormal = Vector2D(0.0, 1.0);
+		}
+		else if (rb1->GetCollider()->GetShapeType() == PhysicShape::ShapeType::Circle &&
 			rb2->GetCollider()->GetShapeType() == PhysicShape::ShapeType::Circle)
 		{
 			CheckCollisionCircle(colData);
@@ -203,15 +209,45 @@ namespace Collisions
 
 	void SolveOverlap(const ColData& data)
 	{
+		//Find proportions of displacement according to masses, the less mass they have, the more they move
+		const double m1 = data.A->GetMass();
+		const double m2 = data.B->GetMass();
+		double prop1 = m2 / (m1 + m2);
+		double prop2 = m1 / (m1 + m2);
+
+		if (data.A->IsStatic())
+		{
+			if (data.B->IsStatic())
+			{
+				prop2 = 0.0;
+				prop1 = 0.0;
+			}
+			else
+			{
+				prop1 = 0.0;
+				prop2 = 1.0;
+			}
+		}
+		else if (data.B->IsStatic())
+		{
+			prop2 = 0.0;
+			prop1 = 1.0;
+		}
+		
+
 		//Move shapes out of the other
-		data.A->SetPos(data.A->GetPos() - data.ColNormal);
-		data.B->SetPos(data.B->GetPos() + data.ColNormal);
+		data.A->SetPos(data.A->GetPos() - data.ColNormal * prop1 * 2.0);
+		data.B->SetPos(data.B->GetPos() + data.ColNormal * prop2 * 2.0);
 	}
 
 	void SolveVelocities(const ColData& data)
 	{
 		Rigibody* rb1 = data.A;
 		Rigibody* rb2 = data.B;
+
+		//handle static
+		if (rb1->IsStatic() && rb2->IsStatic())
+			return;
 
 		const double v1 = rb1->GetVelocity().Magnitude();
 		const double v2 = rb2->GetVelocity().Magnitude();
@@ -235,7 +271,18 @@ namespace Collisions
 		const double v2fy = ((v2 * std::cos(theta2 - phi) * (m2 - m1) + 2 * m1 * v1 * std::cos(theta1 - phi)) / (m2 + m1))
 			* std::sin(phi) + v2 * std::sin(theta2 - phi) * std::sin(phi + mathUtils::pi / 2);
 
-		rb1->SetVelocity(Vector2D(v1fx, v1fy));
-		rb2->SetVelocity(Vector2D(v2fx, v2fy));
+		if (rb1->IsStatic())
+		{
+			rb2->SetVelocity(Vector2D(v2fx, v2fy) - Vector2D(v1fx, v1fy) / m1 * m2);
+		}
+		else if (rb2->IsStatic())
+		{
+			rb1->SetVelocity(Vector2D(v1fx, v1fy) - Vector2D(v2fx, v2fy) / m2 * m1);
+		}
+		else
+		{
+			rb1->SetVelocity(Vector2D(v1fx, v1fy));
+			rb2->SetVelocity(Vector2D(v2fx, v2fy));
+		}
 	}
 }
