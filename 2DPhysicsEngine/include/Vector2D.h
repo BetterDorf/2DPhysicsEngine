@@ -20,7 +20,7 @@ public:
 	/// <returns>Gives back the z value of the perpendicular vector</returns>
 	static double CrossProduct(Vector2D a, Vector2D b);
 	/// <summary>
-	/// Calculate the vector that is the cross product between a vector in the plane and a vector perpendicular to the plane
+	/// Calculate the vector that is the cross product between two vectors in the plane
 	/// </summary>
 	/// <param name="a">the z component of the perpendicular vector, other values are 0</param>
 	/// <param name="b">the vector in the plane</param>

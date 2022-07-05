@@ -9,7 +9,7 @@ class ConvexShape final : public PhysicShape
 public:
 	explicit ConvexShape(std::vector<Vector2D>);
 
-	[[nodiscard]] ShapeType GetShapeType() const override { return ShapeType::Polygon; }
+	[[nodiscard]] ShapeType GetShapeType() const override { return ShapeType::Convex; }
 
 	/// <summary>
 	/// Find the point that is the furthest from the center in a given direction.
@@ -19,8 +19,6 @@ public:
 	///	<returns>Furthest point in the given direction</returns>
 	[[nodiscard]] Vector2D GetFurthestPoint(Vector2D dir) const override;
 
-	[[nodiscard]] std::vector<Vector2D> GetEdges(int pointId);
-	[[nodiscard]] std::vector<Vector2D> GetEdges(Vector2D point);
 	[[nodiscard]] int GetPointId(Vector2D point) const;
 
 	void InsertPoint(Vector2D point, int id);

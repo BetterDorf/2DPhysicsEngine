@@ -52,6 +52,9 @@ double Vector2D::Magnitude() const
 
 Vector2D Vector2D::Normalize() const
 {
+	if (*this == Vector2D())
+		return Vector2D();
+
 	return *this / this->Magnitude();
 }
 

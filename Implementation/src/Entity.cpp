@@ -21,7 +21,7 @@ Entity::Entity(std::unique_ptr<Rigibody> rigibody): id_(curId++), rbPtr_(std::mo
 			this->setOrigin(sf::Vector2f(sfmlRadius, sfmlRadius));
 			break;
 		}
-		case PhysicShape::ShapeType::Polygon:
+		case PhysicShape::ShapeType::Convex:
 		{
 			const auto shape = dynamic_cast<ConvexShape*>(rbPtr_->GetCollider());
 			int pointCount = static_cast<int>(shape->GetPoints().size());

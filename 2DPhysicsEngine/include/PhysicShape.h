@@ -10,10 +10,9 @@ public:
 	{
 		None,
 		Circle,
-		Polygon
+		Convex
 	};
 
-	[[nodiscard]] static bool CheckCollision(PhysicShape*, PhysicShape*);
 	[[nodiscard]] virtual ShapeType GetShapeType() const = 0;
 
 	[[nodiscard]] double GetBoundingCircleRad() const { return boundingCircleRadius_; }

@@ -30,44 +30,6 @@ Vector2D ConvexShape::GetFurthestPoint(Vector2D dir) const
 	return points_[bestId];
 }
 
-std::vector<Vector2D> ConvexShape::GetEdges(const int pointId)
-{
-	auto pointsInEdge = std::vector<Vector2D>();
-
-	const int size = static_cast<int>(points_.size());
-
-	pointsInEdge.emplace_back(points_[(pointId - 1 + size) % size]);
-	pointsInEdge.emplace_back(points_[pointId]); 
-	pointsInEdge.emplace_back(points_[(pointId + 1 + size) % size]);
-
-	return pointsInEdge;
-}
-
-std::vector<Vector2D> ConvexShape::GetEdges(const Vector2D point)
-{
-	return GetEdges(GetPointId(point));
-}
-
-int ConvexShape::GetPointId(const Vector2D point) const
-{
-	int id = 0;
-
-	//Find the point
-	for (auto element : points_)
-	{
-		if (point == element)
-		{
-			//Stop searching for point
-			break;
-		}
-
-		//Increment each loop
-		id++;
-	}
-
-	return id;
-}
-
 void ConvexShape::InsertPoint(const Vector2D point, const int id)
 {
 	points_.insert(points_.begin() + id, point);
