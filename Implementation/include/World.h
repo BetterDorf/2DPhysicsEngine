@@ -6,7 +6,7 @@
 class World
 {
 public:
-	explicit World(std::unique_ptr<sf::RenderWindow> window, double physicsTimestep) : window_(std::move(window)),
+	explicit World(std::unique_ptr<sf::RenderWindow> window, const double physicsTimestep) : window_(std::move(window)),
 	physicsTimestep_(physicsTimestep){}
 
 	void AddEntity(std::unique_ptr<Entity>);
@@ -26,4 +26,6 @@ private:
 
 	void Update(double);
 	static void UpdatePhysics(double);
+
+	void ClickEvent(sf::Event);
 };

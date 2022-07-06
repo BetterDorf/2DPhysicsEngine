@@ -37,11 +37,13 @@ public:
 	[[nodiscard]] PhysicShape* GetCollider() const { return colliderPtr_.get(); }
 	[[nodiscard]] bool IsStatic() const { return isStatic_; }
 	[[nodiscard]] bool UseGravity() const { return useGravity_; }
+	[[nodiscard]] bool IsColliding() const { return isColliding_; }
 
 	void SetPos(const Vector2D newPos) { position_ = newPos; }
 	void SetVelocity(const Vector2D newVelocity) { velocity_ = newVelocity; }
 	void SetMass(const double newMass) { mass_ = newMass; }
 	void SetCollider(std::unique_ptr<PhysicShape> newCol) { colliderPtr_.reset(); colliderPtr_ = std::move(newCol); }
+	void SetIsColliding(const bool colliding) { isColliding_ = colliding; }
 
 private:
 	inline static unsigned long CurId = 0;
@@ -55,6 +57,8 @@ private:
 	double mass_ = 1.0;
 	bool useGravity_ = true;
 	bool isStatic_ = false;
+
+	bool isColliding_ = false;
 
 	std::unique_ptr<PhysicShape> colliderPtr_;
 };

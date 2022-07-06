@@ -2,6 +2,7 @@
 
 #include "CircleShape.h"
 #include "MathUtils.h"
+#include "PhysicsConstant.h"
 
 namespace Collisions
 {
@@ -249,6 +250,21 @@ namespace Collisions
 		if (rb1->IsStatic() && rb2->IsStatic())
 			return;
 
+		if (rb1->IsStatic() || rb2->IsStatic())
+		{
+			Rigibody* nonStatic = !rb1->IsStatic() ? rb1 : rb2;
+
+			const Vector2D v = nonStatic->GetVelocity();
+			const Vector2D n = data.ColNormal.Normalize() * -1.0;
+			Vector2D v1;
+			const double k = 2.0 * Vector2D::DotProduct(v, n);
+			v1.X = v.X - k * n.X;
+			v1.Y = v.Y - k * n.Y;
+
+			nonStatic->SetVelocity(v1);
+			return;
+		}
+
 		const double v1 = rb1->GetVelocity().Magnitude();
 		const double v2 = rb2->GetVelocity().Magnitude();
 
@@ -258,8 +274,7 @@ namespace Collisions
 		const double theta1 = rb1->GetVelocity().AngleRadWithOAxis();
 		const double theta2 = rb2->GetVelocity().AngleRadWithOAxis();
 
-		//TEMPORARY SOLUTION UNTIL WE HAVE CONTACT MANIFOLD
-		const double phi = (rb2->GetPos() - rb1->GetPos()).AngleRadWithOAxis();
+		const double phi = data.ColNormal.AngleRadWithOAxis();
 
 		const double v1fx = ((v1 * std::cos(theta1 - phi) * (m1 - m2) + 2 * m2 * v2 * std::cos(theta2 - phi)) / (m1 + m2))
 			* std::cos(phi) + v1 * std::sin(theta1 - phi) * std::cos(phi + mathUtils::pi / 2);
@@ -271,18 +286,7 @@ namespace Collisions
 		const double v2fy = ((v2 * std::cos(theta2 - phi) * (m2 - m1) + 2 * m1 * v1 * std::cos(theta1 - phi)) / (m2 + m1))
 			* std::sin(phi) + v2 * std::sin(theta2 - phi) * std::sin(phi + mathUtils::pi / 2);
 
-		if (rb1->IsStatic())
-		{
-			rb2->SetVelocity(Vector2D(v2fx, v2fy) - Vector2D(v1fx, v1fy) / m1 * m2);
-		}
-		else if (rb2->IsStatic())
-		{
-			rb1->SetVelocity(Vector2D(v1fx, v1fy) - Vector2D(v2fx, v2fy) / m2 * m1);
-		}
-		else
-		{
-			rb1->SetVelocity(Vector2D(v1fx, v1fy));
-			rb2->SetVelocity(Vector2D(v2fx, v2fy));
-		}
+		rb1->SetVelocity(Vector2D(v1fx, v1fy));
+		rb2->SetVelocity(Vector2D(v2fx, v2fy));
 	}
 }

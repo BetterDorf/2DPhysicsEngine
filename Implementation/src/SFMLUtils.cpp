@@ -4,7 +4,7 @@ namespace SFMLUtils
 {
 	sf::Vector2f WorldToScreenPos(const Vector2D worldPos, const Vector2D cameraPos)
 	{
-		const Vector2D newPos = worldPos * PIXELSTOMETERSRATIO - cameraPos;
+		const Vector2D newPos = (worldPos - cameraPos) * PIXELSTOMETERSRATIO;
 
 		return sf::Vector2f(static_cast<float>(newPos.X), static_cast<float>(- newPos.Y));
 	}

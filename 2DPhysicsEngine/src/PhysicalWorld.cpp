@@ -28,6 +28,8 @@ void PhysicalWorld::Tick(const double timeElapsed)
 	auto rbs = std::make_unique<std::unordered_set<Rigibody*>>();
 	for (auto& rb : rigibodies_ | std::views::values)
 	{
+		rb->SetIsColliding(false);
+
 		rbs->emplace(rb);
 	}
 	SpacePartionning::RegionNode baseNode(std::move(rbs));
@@ -70,6 +72,9 @@ void PhysicalWorld::Tick(const double timeElapsed)
 				if (Collisions::ColData data = Collisions::CheckCollision(rbPtr1, rbPtr2);
 					data.HasCollided)
 				{
+					rbPtr1->SetIsColliding(true);
+					rbPtr2->SetIsColliding(true);
+
 					Collisions::SolveOverlap(data);
 					Collisions::SolveVelocities(data);
 				}

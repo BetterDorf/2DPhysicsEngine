@@ -1,8 +1,13 @@
 #include "World.h"
+
+#include <random>
+
 #include "PhysicalWorld.h"
 #include "SFMLUtils.h"
 
 #include <ranges>
+
+#include "CircleShape.h"
 
 void World::AddEntity(std::unique_ptr<Entity> ent)
 {
@@ -20,6 +25,10 @@ void World::Start()
     sf::Clock clock;
     sf::Time collectedEllapse;
     sf::Time lastPhysicFrame;
+
+    //Move camera to be in center of the screen
+    cameraPos_ = SFMLUtils::sfVectorToVector2(static_cast<sf::Vector2f>(window_->getSize())) * -0.5;
+    std::cout << cameraPos_.ToString();
 
 	while (window_->isOpen())
 	{
@@ -53,8 +62,12 @@ void World::Update(const double deltaTime)
             window_->close();
             return;
         }
+        if (event.type == sf::Event::MouseButtonPressed)
+        {
+            ClickEvent(event);
+        }
     }
-    constexpr double cameraSpeed = 500.0;
+    constexpr double cameraSpeed = 50.0;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
         cameraPos_ += Vector2D(0, cameraSpeed * deltaTime);
@@ -80,4 +93,22 @@ void World::Update(const double deltaTime)
 void World::UpdatePhysics(const double deltaTime)
 {
 	PhysicalWorld::Tick(deltaTime);
+}
+
+void World::ClickEvent(const sf::Event event)
+{
+    std::cout << std::to_string(sf::Mouse::getPosition(*window_).x) + " " + std::to_string(sf::Mouse::getPosition(*window_).y) + " "
+	+ SFMLUtils::ScreenToWorldPos(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window_)), cameraPos_).ToString() + " " + cameraPos_.ToString();
+
+    std::random_device rd;
+    std::default_random_engine eng(rd());
+    const std::uniform_real_distribution<double> distr(-5.0, 5.0);
+
+	if (event.mouseButton.button == sf::Mouse::Left)
+	{
+        double rad = abs(distr(eng)) + 1;
+        auto rb = std::make_unique<Rigibody>(std::make_unique<CircleShape>(rad),
+            SFMLUtils::ScreenToWorldPos((static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window_))), cameraPos_), Vector2D(), rad);
+        AddEntity(std::make_unique<Entity>(std::move(rb)));
+	}
 }

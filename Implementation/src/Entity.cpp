@@ -63,11 +63,20 @@ Entity::Entity(std::unique_ptr<Rigibody> rigibody, std::unique_ptr<sf::Sprite> d
 
 void Entity::draw(sf::RenderTarget& target, const sf::RenderStates states) const
 {
-	target.draw(*visualPtr_, this->getTransform());
+	target.draw(*visualPtr_,  getTransform());
 }
 
 void Entity::UpdateGraphicsPosition(const Vector2D cameraPos)
 {
 	const sf::Vector2f pos = SFMLUtils::WorldToScreenPos(rbPtr_->GetPos(), cameraPos);
 	setPosition(pos);
+
+	if (auto shape = dynamic_cast<sf::CircleShape*>(&*visualPtr_); shape != nullptr)
+	{
+		shape->setFillColor(rbPtr_->IsColliding() ? sf::Color::Red : sf::Color::White);
+	}
+	if (auto shape = dynamic_cast<sf::ConvexShape*>(&*visualPtr_); shape != nullptr)
+	{
+		shape->setFillColor(rbPtr_->IsColliding() ? sf::Color::Red : sf::Color::White);
+	}
 }
