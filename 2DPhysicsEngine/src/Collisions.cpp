@@ -162,10 +162,18 @@ namespace Collisions
 		Vector2D minNormal;
 		int minIndex = 0;
 
+		static constexpr int MAXITER = 300;
+		int iter = 0;
 		while (minDistance >= INFINITY)
 		{
+			if (++iter > MAXITER)
+			{
+				data.ColNormal = Vector2D();
+				return;
+			}
+
 			//Loop over every edge
-			for(int p1 = 0; p1 < static_cast<int>(polytope.size()); p1++)
+			for (int p1 = 0; p1 < static_cast<int>(polytope.size()); p1++)
 			{
 				//Find the normal
 				const int p2 = (p1 + 1) % static_cast<int>(polytope.size());
@@ -237,8 +245,8 @@ namespace Collisions
 		
 
 		//Move shapes out of the other
-		data.A->SetPos(data.A->GetPos() - data.ColNormal * prop1 * 2.0);
-		data.B->SetPos(data.B->GetPos() + data.ColNormal * prop2 * 2.0);
+		data.A->SetPos(data.A->GetPos() - data.ColNormal * prop1);
+		data.B->SetPos(data.B->GetPos() + data.ColNormal * prop2);
 	}
 
 	void SolveVelocities(const ColData& data)

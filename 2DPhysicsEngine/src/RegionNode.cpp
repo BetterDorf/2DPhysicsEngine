@@ -9,8 +9,8 @@
 #include <string>
 #include <utility>
 
-SpacePartionning::RegionNode::RegionNode(std::unique_ptr<std::unordered_set<Rigibody*>> inRegion) :
-bodiesInRegion_(std::move(inRegion))
+SpacePartionning::RegionNode::RegionNode(std::unique_ptr<std::unordered_set<Rigibody*>> inRegion, const int depth) :
+depth_(depth), bodiesInRegion_(std::move(inRegion))
 {
 	TrySplit();
 }
@@ -63,10 +63,11 @@ std::unordered_set<std::unordered_set<Rigibody*>*> SpacePartionning::RegionNode:
 
 void SpacePartionning::RegionNode::TrySplit()
 {
-	if (static_cast<int>(bodiesInRegion_->size()) <= PhysicsConstants::maxBodiesInRegion)
-	{
+	if (depth_ >= PhysicsConstants::maxQuadDepth)
 		return;
-	}
+
+	if (static_cast<int>(bodiesInRegion_->size()) <= PhysicsConstants::maxBodiesInRegion)
+		return;
 
 	Split();
 }
@@ -112,12 +113,12 @@ void SpacePartionning::RegionNode::Split()
 	}
 
 	//Clear our unused memory 
-	//bodiesInRegion_.reset();
+	bodiesInRegion_.reset();
 
-	children_.emplace_back(std::make_unique<RegionNode>(std::move(region0Bodies)));
-	children_.emplace_back(std::make_unique<RegionNode>(std::move(region1Bodies)));
-	children_.emplace_back(std::make_unique<RegionNode>(std::move(region2Bodies)));
-	children_.emplace_back(std::make_unique<RegionNode>(std::move(region3Bodies)));
+	children_.emplace_back(std::make_unique<RegionNode>(std::move(region0Bodies), depth_ + 1));
+	children_.emplace_back(std::make_unique<RegionNode>(std::move(region1Bodies), depth_ + 1));
+	children_.emplace_back(std::make_unique<RegionNode>(std::move(region2Bodies), depth_ + 1));
+	children_.emplace_back(std::make_unique<RegionNode>(std::move(region3Bodies), depth_ + 1));
 }
 
 int SpacePartionning::RegionNode::FindSubregionForBody(const Rigibody* body) const

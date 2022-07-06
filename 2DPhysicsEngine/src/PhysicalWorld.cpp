@@ -32,7 +32,7 @@ void PhysicalWorld::Tick(const double timeElapsed)
 
 		rbs->emplace(rb);
 	}
-	SpacePartionning::RegionNode baseNode(std::move(rbs));
+	SpacePartionning::RegionNode baseNode(std::move(rbs), 0);
 
 	std::unordered_multimap<Rigibody*, Rigibody*> CheckedCollisions;
 
