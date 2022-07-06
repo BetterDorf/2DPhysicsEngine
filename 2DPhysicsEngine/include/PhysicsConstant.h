@@ -7,6 +7,6 @@ namespace PhysicsConstants
 
 	static constexpr double deccelerationFactor = 0.1;
 
-	static constexpr int maxBodiesInRegion = 10;
+	static constexpr int maxBodiesInRegion = 1;
 	static constexpr int maxQuadDepth = 5;
 }

@@ -38,7 +38,11 @@ void PhysicalWorld::Tick(const double timeElapsed)
 
 	for (const auto& rbPtr1 : rigibodies_ | std::views::values)
 	{
-		for (auto& rbSet : baseNode.GetBodiesInRegionsInRadius(rbPtr1))
+		if (rbPtr1->IsStatic())
+			continue;
+
+		auto candidatesSet = baseNode.GetBodiesInRegionsInRadius(rbPtr1);
+		for (auto& rbSet : candidatesSet)
 		{
 			for (auto& rbPtr2 : *rbSet)
 			{
