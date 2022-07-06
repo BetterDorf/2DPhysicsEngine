@@ -1,6 +1,8 @@
 #include "Rigibody.h"
 #include "PhysicalWorld.h"
 
+#include "PhysicsConstant.h"
+
 Rigibody::Rigibody(std::unique_ptr<PhysicShape> col) : id_(CurId++), colliderPtr_(std::move(col))
 {
 	PhysicalWorld::AddRb(this);
@@ -51,6 +53,8 @@ void Rigibody::Update(const double time)
 		velocity_ = Vector2D();
 
 	position_ += velocity_ * time;
+
+	velocity_ -= velocity_ * PhysicsConstants::deccelerationFactor * time;
 }
 
 void Rigibody::AddForceImpulse(const Vector2D force)
