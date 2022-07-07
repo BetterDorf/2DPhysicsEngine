@@ -9,15 +9,15 @@
 #include <string>
 #include <utility>
 
-SpacePartionning::RegionNode::RegionNode(std::unique_ptr<std::unordered_set<Rigibody*>> inRegion, const int depth) :
+SpacePartionning::RegionNode::RegionNode(std::unordered_set<Rigibody*> inRegion, const int depth) :
 depth_(depth), bodiesInRegion_(std::move(inRegion))
 {
-	bodiesInDistance_ = std::make_unique<std::unordered_set<Rigibody*>>(*bodiesInRegion_);
+	bodiesInDistance_ = bodiesInRegion_;
 	TrySplit();
 }
 
-SpacePartionning::RegionNode::RegionNode(std::unique_ptr<std::unordered_set<Rigibody*>> inRegion,
-	std::unique_ptr<std::unordered_set<Rigibody*>> inDistance, const int depth) : depth_(depth), bodiesInRegion_(std::move(inRegion)),
+SpacePartionning::RegionNode::RegionNode(std::unordered_set<Rigibody*> inRegion,
+	std::unordered_set<Rigibody*> inDistance, const int depth) : depth_(depth), bodiesInRegion_(std::move(inRegion)),
 	bodiesInDistance_(std::move(inDistance))
 {
 	TrySplit();
@@ -34,7 +34,7 @@ std::unordered_set<std::unordered_set<Rigibody*>*> SpacePartionning::RegionNode:
 		//Add the bodies of the subregions
 		for (const auto& intersecting_region : intersectingRegions)
 		{
-			for (auto& bodies : children_[intersecting_region]->GetBodiesInRegionsInRadius(rbPtr))
+			for (auto& bodies : children_[intersecting_region].GetBodiesInRegionsInRadius(rbPtr))
 			{
 				possibleCollisionBodies.emplace(bodies);
 			}
@@ -43,10 +43,7 @@ std::unordered_set<std::unordered_set<Rigibody*>*> SpacePartionning::RegionNode:
 	else
 	{
 		//We don't have subregions so we just add our own bodylist
-		if (bodiesInDistance_ == nullptr)
-			possibleCollisionBodies.emplace(bodiesInRegion_.get());
-		else
-			possibleCollisionBodies.emplace(bodiesInDistance_.get());
+		possibleCollisionBodies.emplace(&bodiesInDistance_);
 	}
 
 	return possibleCollisionBodies;
@@ -57,7 +54,7 @@ void SpacePartionning::RegionNode::TrySplit()
 	if (depth_ >= PhysicsConstants::maxQuadDepth)
 		return;
 
-	if (static_cast<int>(bodiesInRegion_->size()) <= PhysicsConstants::maxBodiesInRegion)
+	if (static_cast<int>(bodiesInRegion_.size()) <= PhysicsConstants::maxBodiesInRegion)
 		return;
 
 	Split();
@@ -69,61 +66,61 @@ void SpacePartionning::RegionNode::Split()
 
 	//Calculate average of points
 	Vector2D sum;
-	for (const auto& val : *bodiesInRegion_)
+	for (const auto& val : bodiesInRegion_)
 	{
 		sum += val->GetPos();
 	}
 
-	splitPoint_ = sum / static_cast<double>(bodiesInRegion_->size());
+	splitPoint_ = sum / static_cast<double>(bodiesInRegion_.size());
 
 	//Make the new regions
 	//Find the points that belong in them
-	auto region0Bodies = std::make_unique<std::unordered_set<Rigibody*>>();
-	auto region0NearBodies = std::make_unique<std::unordered_set<Rigibody*>>();
-	auto region1Bodies = std::make_unique<std::unordered_set<Rigibody*>>();
-	auto region1NearBodies = std::make_unique<std::unordered_set<Rigibody*>>();
-	auto region2Bodies = std::make_unique<std::unordered_set<Rigibody*>>();
-	auto region2NearBodies = std::make_unique<std::unordered_set<Rigibody*>>();
-	auto region3Bodies = std::make_unique<std::unordered_set<Rigibody*>>();
-	auto region3NearBodies = std::make_unique<std::unordered_set<Rigibody*>>();
+	auto region0Bodies = std::unordered_set<Rigibody*>();
+	auto region0NearBodies = std::unordered_set<Rigibody*>();
+	auto region1Bodies = std::unordered_set<Rigibody*>();
+	auto region1NearBodies = std::unordered_set<Rigibody*>();
+	auto region2Bodies = std::unordered_set<Rigibody*>();
+	auto region2NearBodies = std::unordered_set<Rigibody*>();
+	auto region3Bodies = std::unordered_set<Rigibody*>();
+	auto region3NearBodies = std::unordered_set<Rigibody*>();
 
-	for (auto& body : *bodiesInRegion_)
+	for (auto& body : bodiesInRegion_)
 	{
 		switch (FindSubregionForBody(body))
 		{
 		case 0:
-			region0Bodies->emplace(body);
+			region0Bodies.emplace(body);
 			break;
 		case 1:
-			region1Bodies->emplace(body);
+			region1Bodies.emplace(body);
 			break;
 		case 2:
-			region2Bodies->emplace(body);
+			region2Bodies.emplace(body);
 			break;
 		case 3:
-			region3Bodies->emplace(body);
+			region3Bodies.emplace(body);
 			break;
 		default:break;
 		}
 	}
 
-	for (auto& body : *bodiesInDistance_)
+	for (auto& body : bodiesInDistance_)
 	{
 		for (auto regions = FindSubregionsForBody(body); const auto region : regions)
 		{
 			switch (region)
 			{
 			case 0:
-				region0NearBodies->emplace(body);
+				region0NearBodies.emplace(body);
 				break;
 			case 1:
-				region1NearBodies->emplace(body);
+				region1NearBodies.emplace(body);
 				break;
 			case 2:
-				region2NearBodies->emplace(body);
+				region2NearBodies.emplace(body);
 				break;
 			case 3:
-				region3NearBodies->emplace(body);
+				region3NearBodies.emplace(body);
 				break;
 			default:break;
 			}
@@ -134,10 +131,10 @@ void SpacePartionning::RegionNode::Split()
 	/*bodiesInRegion_.reset();
 	bodiesInDistance_.reset();*/
 
-	children_.emplace_back(std::make_unique<RegionNode>(std::move(region0Bodies), std::move(region0NearBodies), depth_ + 1));
-	children_.emplace_back(std::make_unique<RegionNode>(std::move(region1Bodies), std::move(region1NearBodies), depth_ + 1));
-	children_.emplace_back(std::make_unique<RegionNode>(std::move(region2Bodies), std::move(region2NearBodies), depth_ + 1));
-	children_.emplace_back(std::make_unique<RegionNode>(std::move(region3Bodies), std::move(region3NearBodies), depth_ + 1));
+	children_.emplace_back(region0Bodies, region0NearBodies, depth_ + 1);
+	children_.emplace_back(region1Bodies, region1NearBodies, depth_ + 1);
+	children_.emplace_back(region2Bodies, region2NearBodies, depth_ + 1);
+	children_.emplace_back(region3Bodies, region3NearBodies, depth_ + 1);
 }
 
 std::unordered_set<int> SpacePartionning::RegionNode::FindSubregionsForBody(const Rigibody* rbPtr) const
@@ -154,7 +151,7 @@ std::unordered_set<int> SpacePartionning::RegionNode::FindSubregionsForBody(cons
 	}
 	if (const double distance = rbPtr->GetPos().Y - splitPoint_.Y;  std::abs(distance) < rbPtr->GetCollider()->GetBoundingCircleRad())
 	{
-		intersectingRegions.emplace((baseRegion + 1) % 2 + baseRegion > 1 ? 2: 0);
+		intersectingRegions.emplace((baseRegion + 1) % 2 + (baseRegion > 1 ? 2: 0));
 	}
 
 	//Assume that if three regions are in, the fourth will be too

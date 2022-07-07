@@ -25,14 +25,14 @@ void PhysicalWorld::Tick(const double timeElapsed)
 	//Check Collisions
 
 	//Make quad Tree
-	auto rbs = std::make_unique<std::unordered_set<Rigibody*>>();
+	auto rbs = std::unordered_set<Rigibody*>();
 	for (auto& rb : rigibodies_ | std::views::values)
 	{
 		rb->SetIsColliding(false);
 
-		rbs->emplace(rb);
+		rbs.emplace(rb);
 	}
-	SpacePartionning::RegionNode baseNode(std::move(rbs), 0);
+	SpacePartionning::RegionNode baseNode(rbs, 0);
 
 	std::unordered_multimap<Rigibody*, Rigibody*> CheckedCollisions;
 
@@ -53,8 +53,8 @@ void PhysicalWorld::Tick(const double timeElapsed)
 				}
 				//Check if collision already happened
 				//Make a pair out of the pointers where the first one is the lowest of the two
-				auto pointerPair = rbPtr1 < rbPtr2 ? std::pair<Rigibody*, Rigibody*>(rbPtr1, rbPtr2)
-					                  : std::pair<Rigibody*, Rigibody*>(rbPtr2, rbPtr1);
+				auto pointerPair = rbPtr1 < rbPtr2 ? std::make_pair(rbPtr1, rbPtr2)
+					                  : std::make_pair(rbPtr2, rbPtr1);
 				//Leverage the fact that we know that our pair will be stored as { lowest ; highest }
 				auto [fst, snd] = CheckedCollisions.equal_range(pointerPair.first);
 				bool isContained = false;
