@@ -12,6 +12,7 @@
 SpacePartionning::RegionNode::RegionNode(std::unique_ptr<std::unordered_set<Rigibody*>> inRegion, const int depth) :
 depth_(depth), bodiesInRegion_(std::move(inRegion))
 {
+	bodiesInDistance_ = std::make_unique<std::unordered_set<Rigibody*>>(*bodiesInRegion_);
 	TrySplit();
 }
 
@@ -42,7 +43,10 @@ std::unordered_set<std::unordered_set<Rigibody*>*> SpacePartionning::RegionNode:
 	else
 	{
 		//We don't have subregions so we just add our own bodylist
-		possibleCollisionBodies.emplace(bodiesInDistance_.get());
+		if (bodiesInDistance_ == nullptr)
+			possibleCollisionBodies.emplace(bodiesInRegion_.get());
+		else
+			possibleCollisionBodies.emplace(bodiesInDistance_.get());
 	}
 
 	return possibleCollisionBodies;
@@ -101,7 +105,10 @@ void SpacePartionning::RegionNode::Split()
 			break;
 		default:break;
 		}
+	}
 
+	for (auto& body : *bodiesInDistance_)
+	{
 		for (auto regions = FindSubregionsForBody(body); const auto region : regions)
 		{
 			switch (region)
@@ -124,8 +131,8 @@ void SpacePartionning::RegionNode::Split()
 	}
 
 	//Clear our unused memory 
-	bodiesInRegion_.reset();
-	bodiesInDistance_.reset();
+	/*bodiesInRegion_.reset();
+	bodiesInDistance_.reset();*/
 
 	children_.emplace_back(std::make_unique<RegionNode>(std::move(region0Bodies), std::move(region0NearBodies), depth_ + 1));
 	children_.emplace_back(std::make_unique<RegionNode>(std::move(region1Bodies), std::move(region1NearBodies), depth_ + 1));
@@ -141,11 +148,11 @@ std::unordered_set<int> SpacePartionning::RegionNode::FindSubregionsForBody(cons
 	intersectingRegions.emplace(baseRegion);
 
 	//Find all the regions the body crosses over in with it's radius
-	if (const double distance = rbPtr->GetPos().X - splitPoint_.X;  abs(distance) < rbPtr->GetCollider()->GetBoundingCircleRad())
+	if (const double distance = rbPtr->GetPos().X - splitPoint_.X;  std::abs(distance) < rbPtr->GetCollider()->GetBoundingCircleRad())
 	{
 		intersectingRegions.emplace((baseRegion + 2) % 4);
 	}
-	if (const double distance = rbPtr->GetPos().Y - splitPoint_.Y;  abs(distance) < rbPtr->GetCollider()->GetBoundingCircleRad())
+	if (const double distance = rbPtr->GetPos().Y - splitPoint_.Y;  std::abs(distance) < rbPtr->GetCollider()->GetBoundingCircleRad())
 	{
 		intersectingRegions.emplace((baseRegion + 1) % 2 + baseRegion > 1 ? 2: 0);
 	}
