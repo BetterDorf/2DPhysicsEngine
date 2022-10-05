@@ -12,13 +12,13 @@ Vector2D ConvexShape::GetFurthestPoint(Vector2D dir) const
 {
 	dir = dir.Normalize();
 
-	double bestDot = 0.0;
+	float bestDot = 0.0;
 	int bestId = 0;
 
 	int curId = 0;
 	for (auto& point : points_)
 	{
-		if (const double curDot = Vector2D::DotProduct(dir, point); curDot > bestDot)
+		if (const float curDot = Vector2D::DotProduct(dir, point); curDot > bestDot)
 		{
 			bestDot = curDot;
 			bestId = curId;
@@ -44,7 +44,7 @@ void ConvexShape::ConvertToConvex()
 	auto newPointsSet = std::vector<Vector2D>();
 
 	//Find left-most point (since it's going to be necesseraly a part of our new shape as it's on the very edge)
-	double bestX = INFINITY;
+	float bestX = INFINITY;
 	int firstPivotId = 0;
 	int curId = 0;
 	for (const auto& point : points_)
@@ -72,7 +72,7 @@ void ConvexShape::ConvertToConvex()
 		if (it++ > 5000)
 			std::cout << "wat";
 		//Compare every point and find next pivot
-		double smallestAngle = INFINITY;
+		float smallestAngle = INFINITY;
 		
 		for (int id = 0; id < static_cast<int>(points_.size()); id++)
 		{
@@ -85,7 +85,7 @@ void ConvexShape::ConvertToConvex()
 			const Vector2D v1 = curDirection;
 			const Vector2D v2 = points_[id] - points_[curPivotId];
 
-			if (const double angle = v1.AngleClockwiseWith(v2); angle < smallestAngle)
+			if (const float angle = v1.AngleClockwiseWith(v2); angle < smallestAngle)
 			{
 				nextPivotId = id;
 				smallestAngle = angle;
@@ -121,10 +121,10 @@ void ConvexShape::RepositionCenter()
 	}
 
 	//Recalculate the boundingCircle
-	double furthest = 0.0;
+	float furthest = 0.0;
 	for (auto element : points_)
 	{
-		if (const double distance = element.Magnitude(); distance > furthest)
+		if (const float distance = element.Magnitude(); distance > furthest)
 			furthest = distance;
 	}
 	boundingCircleRadius_ = furthest;

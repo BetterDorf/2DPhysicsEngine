@@ -13,7 +13,7 @@ Rigibody::Rigibody(std::unique_ptr<PhysicShape> col, const Vector2D pos) : Rigib
 	position_ = pos;
 }
 
-Rigibody::Rigibody(std::unique_ptr<PhysicShape> col, const Vector2D pos, const double mass) : Rigibody(std::move(col), pos)
+Rigibody::Rigibody(std::unique_ptr<PhysicShape> col, const Vector2D pos, const float mass) : Rigibody(std::move(col), pos)
 {
 	mass_ = mass;
 }
@@ -23,18 +23,18 @@ Rigibody::Rigibody(std::unique_ptr<PhysicShape> col, const Vector2D pos, const V
 	velocity_ = vel;
 }
 
-Rigibody::Rigibody(std::unique_ptr<PhysicShape> col, const Vector2D pos, const Vector2D vel, const double mass) : Rigibody(std::move(col), pos, vel)
+Rigibody::Rigibody(std::unique_ptr<PhysicShape> col, const Vector2D pos, const Vector2D vel, const float mass) : Rigibody(std::move(col), pos, vel)
 {
 	mass_ = mass;
 }
 
-Rigibody::Rigibody(std::unique_ptr<PhysicShape> col, const Vector2D pos, const Vector2D vel, const double mass, const bool isStatic)
+Rigibody::Rigibody(std::unique_ptr<PhysicShape> col, const Vector2D pos, const Vector2D vel, const float mass, const bool isStatic)
 	: Rigibody(std::move(col), pos, vel, mass)
 {
 	isStatic_ = isStatic;
 }
 
-Rigibody::Rigibody(std::unique_ptr<PhysicShape> col, const Vector2D pos, const Vector2D vel, const double mass, const bool isStatic, const bool useGravity)
+Rigibody::Rigibody(std::unique_ptr<PhysicShape> col, const Vector2D pos, const Vector2D vel, const float mass, const bool isStatic, const bool useGravity)
 	: Rigibody(std::move(col), pos, vel, mass, isStatic)
 {
 	useGravity_ = useGravity;
@@ -47,7 +47,7 @@ Rigibody::~Rigibody()
 }
 
 
-void Rigibody::Update(const double time)
+void Rigibody::Update(const float time)
 {
 	if (_isnan(velocity_.X) || _isnan(velocity_.Y))
 		velocity_ = Vector2D();
@@ -65,7 +65,7 @@ void Rigibody::AddForceImpulse(const Vector2D force)
 	this->velocity_ += force / mass_;
 }
  
-void Rigibody::AddForceContinuous(const Vector2D force, const double time)
+void Rigibody::AddForceContinuous(const Vector2D force, const float time)
 {
 	if (isStatic_)
 		return;
@@ -81,7 +81,7 @@ void Rigibody::AddAcceleration(const Vector2D acceleration)
 	this->velocity_ += acceleration;
 }
 
-void Rigibody::AddAccelerationContinuous(const Vector2D acceleration, const double time)
+void Rigibody::AddAccelerationContinuous(const Vector2D acceleration, const float time)
 {
 	if (isStatic_)
 		return;
@@ -99,7 +99,7 @@ Vector2D Rigibody::WorldToLocalPos(const Vector2D world) const
 	return world - position_;
 }
 
-double Rigibody::GetMass() const
+float Rigibody::GetMass() const
 {
 	return mass_;
 }

@@ -10,7 +10,7 @@ public:
 
 	static void AddRb(Rigibody*);
 	static void RemoveRb(long);
-	static void Tick(double timeElapsed);
+	static void Tick(float timeElapsed);
 private:
 	static std::unordered_map<unsigned long, Rigibody*> rigibodies_;
 };

@@ -38,8 +38,8 @@ namespace Collisions
 		const Rigibody* rb1 = colData.A;
 		const Rigibody* rb2 = colData.B;
 
-		const double distanceBetweenCenters = (rb1->GetPos() - rb2->GetPos()).Magnitude();
-		const double radiiLength = rb1->GetCollider()->GetBoundingCircleRad() + rb2->GetCollider()->GetBoundingCircleRad();
+		const float distanceBetweenCenters = (rb1->GetPos() - rb2->GetPos()).Magnitude();
+		const float radiiLength = rb1->GetCollider()->GetBoundingCircleRad() + rb2->GetCollider()->GetBoundingCircleRad();
 
 		if (distanceBetweenCenters <= radiiLength)
 		{
@@ -158,7 +158,7 @@ namespace Collisions
 		if(!data.HasCollided)
 			return;
 
-		double minDistance = INFINITY;
+		float minDistance = INFINITY;
 		Vector2D minNormal;
 		int minIndex = 0;
 
@@ -181,7 +181,7 @@ namespace Collisions
 				Vector2D normal = edge.GetPerpendicularVector().Normalize();
 
 				//Distance to origin
-				double normalDistance = Vector2D::DotProduct(normal, polytope[p1]);
+				float normalDistance = Vector2D::DotProduct(normal, polytope[p1]);
 
 				//Check that we took the correct normal vector and flip it if not
 				if (normalDistance < 0.0)
@@ -201,7 +201,7 @@ namespace Collisions
 
 			//Get point in the direction of closest normal
 			Vector2D support = GJKSupportFunction(data.A, data.B, minNormal);
-			const double supportDistance = Vector2D::DotProduct(minNormal, support);
+			const float supportDistance = Vector2D::DotProduct(minNormal, support);
 
 			//If there is a point that gives a different result, we didn't finish our search yet
 			if (!mathUtils::isApproximatelyEqual(supportDistance, minDistance))
@@ -219,10 +219,10 @@ namespace Collisions
 	void SolveOverlap(const ColData& data)
 	{
 		//Find proportions of displacement according to masses, the less mass they have, the more they move
-		const double m1 = data.A->GetMass();
-		const double m2 = data.B->GetMass();
-		double prop1 = m2 / (m1 + m2);
-		double prop2 = m1 / (m1 + m2);
+		const float m1 = data.A->GetMass();
+		const float m2 = data.B->GetMass();
+		float prop1 = m2 / (m1 + m2);
+		float prop2 = m1 / (m1 + m2);
 
 		if (data.A->IsStatic())
 		{
@@ -265,7 +265,7 @@ namespace Collisions
 			const Vector2D v = nonStatic->GetVelocity();
 			const Vector2D n = data.ColNormal.Normalize() * -1.0;
 			Vector2D v1;
-			const double k = 2.0 * Vector2D::DotProduct(v, n);
+			const float k = 2.0 * Vector2D::DotProduct(v, n);
 			v1.X = v.X - k * n.X;
 			v1.Y = v.Y - k * n.Y;
 
@@ -273,25 +273,25 @@ namespace Collisions
 			return;
 		}
 
-		const double v1 = rb1->GetVelocity().Magnitude();
-		const double v2 = rb2->GetVelocity().Magnitude();
+		const float v1 = rb1->GetVelocity().Magnitude();
+		const float v2 = rb2->GetVelocity().Magnitude();
 
-		const double m1 = rb1->GetMass();
-		const double m2 = rb2->GetMass();
+		const float m1 = rb1->GetMass();
+		const float m2 = rb2->GetMass();
 
-		const double theta1 = rb1->GetVelocity().AngleRadWithOAxis();
-		const double theta2 = rb2->GetVelocity().AngleRadWithOAxis();
+		const float theta1 = rb1->GetVelocity().AngleRadWithOAxis();
+		const float theta2 = rb2->GetVelocity().AngleRadWithOAxis();
 
-		const double phi = data.ColNormal.AngleRadWithOAxis();
+		const float phi = data.ColNormal.AngleRadWithOAxis();
 
-		const double v1fx = ((v1 * std::cos(theta1 - phi) * (m1 - m2) + 2 * m2 * v2 * std::cos(theta2 - phi)) / (m1 + m2))
+		const float v1fx = ((v1 * std::cos(theta1 - phi) * (m1 - m2) + 2 * m2 * v2 * std::cos(theta2 - phi)) / (m1 + m2))
 			* std::cos(phi) + v1 * std::sin(theta1 - phi) * std::cos(phi + mathUtils::pi / 2);
-		const double v1fy = ((v1 * std::cos(theta1 - phi) * (m1 - m2) + 2 * m2 * v2 * std::cos(theta2 - phi)) / (m1 + m2))
+		const float v1fy = ((v1 * std::cos(theta1 - phi) * (m1 - m2) + 2 * m2 * v2 * std::cos(theta2 - phi)) / (m1 + m2))
 			* std::sin(phi) + v1 * std::sin(theta1 - phi) * std::sin(phi + mathUtils::pi / 2);
 
-		const double v2fx = ((v2 * std::cos(theta2 - phi) * (m2 - m1) + 2 * m1 * v1 * std::cos(theta1 - phi)) / (m2 + m1))
+		const float v2fx = ((v2 * std::cos(theta2 - phi) * (m2 - m1) + 2 * m1 * v1 * std::cos(theta1 - phi)) / (m2 + m1))
 			* std::cos(phi) + v2 * std::sin(theta2 - phi) * std::cos(phi + mathUtils::pi / 2);
-		const double v2fy = ((v2 * std::cos(theta2 - phi) * (m2 - m1) + 2 * m1 * v1 * std::cos(theta1 - phi)) / (m2 + m1))
+		const float v2fy = ((v2 * std::cos(theta2 - phi) * (m2 - m1) + 2 * m1 * v1 * std::cos(theta1 - phi)) / (m2 + m1))
 			* std::sin(phi) + v2 * std::sin(theta2 - phi) * std::sin(phi + mathUtils::pi / 2);
 
 		rb1->SetVelocity(Vector2D(v1fx, v1fy));

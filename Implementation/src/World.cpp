@@ -34,23 +34,23 @@ void World::Start()
 	{
         sf::Time elapsed = clock.restart();
 
-		Update(static_cast<double>(elapsed.asSeconds()));
+		Update(static_cast<float>(elapsed.asSeconds()));
 
-        if (static_cast<double>(elapsed.asSeconds()) > SFMLUtils::MAXTIMESTEP)
+        if (static_cast<float>(elapsed.asSeconds()) > SFMLUtils::MAXTIMESTEP)
             continue;
 
         collectedEllapse += elapsed;
 
 
-        if (static_cast<double>((collectedEllapse - lastPhysicFrame).asSeconds()) > physicsTimestep_)
+        if (static_cast<float>((collectedEllapse - lastPhysicFrame).asSeconds()) > physicsTimestep_)
         {
-			UpdatePhysics(static_cast<double>((collectedEllapse - lastPhysicFrame).asSeconds()));
+			UpdatePhysics(static_cast<float>((collectedEllapse - lastPhysicFrame).asSeconds()));
             lastPhysicFrame = collectedEllapse;
         }
 	}
 }
 
-void World::Update(const double deltaTime)
+void World::Update(const float deltaTime)
 {
 	//Process events
     sf::Event event{};
@@ -67,7 +67,7 @@ void World::Update(const double deltaTime)
             ClickEvent(event);
         }
     }
-    constexpr double cameraSpeed = 50.0;
+    constexpr float cameraSpeed = 50.0;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
         cameraPos_ += Vector2D(0, cameraSpeed * deltaTime);
@@ -90,7 +90,7 @@ void World::Update(const double deltaTime)
     window_->display();
 }
 
-void World::UpdatePhysics(const double deltaTime)
+void World::UpdatePhysics(const float deltaTime)
 {
 	PhysicalWorld::Tick(deltaTime);
 }
@@ -102,17 +102,17 @@ void World::ClickEvent(const sf::Event event)
 
 	if (event.mouseButton.button == sf::Mouse::Left)
 	{
-        const std::uniform_real_distribution<double> radiusdistr(0.0, 3.0);
+		std::uniform_real_distribution<float> radiusdistr(0.0f, 3.0f);
 
-        double rad = abs(radiusdistr(eng)) + 1;
+        float rad = abs(radiusdistr(eng)) + 1;
         auto rb = std::make_unique<Rigibody>(std::make_unique<CircleShape>(rad),
             SFMLUtils::ScreenToWorldPos((static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window_))), cameraPos_), Vector2D(), rad);
         AddEntity(std::make_unique<Entity>(std::move(rb)));
 	}
     else if (event.mouseButton.button == sf::Mouse::Right)
     {
-        const std::uniform_int_distribution<int> edgesNumDistr(0, 5);
-        const std::uniform_real_distribution<double> edgeDistr(-3.0, 3.0);
+        std::uniform_int_distribution<int> edgesNumDistr(0.0f, 5.0f);
+        std::uniform_real_distribution<float> edgeDistr(-3.0f, 3.0f);
 
         int edges = abs(static_cast<int>(edgesNumDistr(eng)));
         if (edges < 3)

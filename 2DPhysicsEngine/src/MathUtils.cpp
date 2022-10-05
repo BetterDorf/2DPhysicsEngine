@@ -1,22 +1,22 @@
 #include "MathUtils.h"
 #include <cmath>
 
-bool mathUtils::isApproximatelyEqual(const double a, const double b)
+bool mathUtils::isApproximatelyEqual(const float a, const float b)
 {
 	return std::abs(a - b) <= mathUtils::epsilon;
 }
 
-double mathUtils::radToDeg(const double rad)
+float mathUtils::radToDeg(const float rad)
 {
 	return rad * 180 / pi;
 }
 
-double mathUtils::degToRad(const double deg)
+float mathUtils::degToRad(const float deg)
 {
 	return deg / 180 * pi;
 }
 
-double mathUtils::signnum_c(const double x)
+float mathUtils::signnum_c(const float x)
 {
 	if (x > 0.0) return 1.0;
 	if (x < 0.0) return -1.0;

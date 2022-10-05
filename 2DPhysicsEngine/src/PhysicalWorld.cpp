@@ -20,7 +20,7 @@ void PhysicalWorld::RemoveRb(const long id)
 	rigibodies_.erase(id);
 }
 
-void PhysicalWorld::Tick(const double timeElapsed)
+void PhysicalWorld::Tick(const float timeElapsed)
 {
 	//Check Collisions
 

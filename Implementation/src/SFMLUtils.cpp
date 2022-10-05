@@ -11,8 +11,8 @@ namespace SFMLUtils
 
 	Vector2D ScreenToWorldPos(const sf::Vector2f screenPos, const Vector2D cameraPos)
 	{
-		const Vector2D newPos = Vector2D(static_cast<double>(screenPos.x),
-			static_cast<double>(-screenPos.y)) / PIXELSTOMETERSRATIO + cameraPos;
+		const Vector2D newPos = Vector2D(static_cast<float>(screenPos.x),
+			static_cast<float>(-screenPos.y)) / PIXELSTOMETERSRATIO + cameraPos;
 
 		return newPos;
 	}
@@ -24,6 +24,6 @@ namespace SFMLUtils
 
 	Vector2D sfVectorToVector2(const sf::Vector2f v)
 	{
-		return Vector2D(static_cast<double>(v.x), -static_cast<double>(v.y)) / PIXELSTOMETERSRATIO;
+		return Vector2D(static_cast<float>(v.x), -static_cast<float>(v.y)) / PIXELSTOMETERSRATIO;
 	}
 }

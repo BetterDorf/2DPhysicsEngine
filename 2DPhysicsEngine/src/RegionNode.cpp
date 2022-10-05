@@ -71,7 +71,7 @@ void SpacePartionning::RegionNode::Split()
 		sum += val->GetPos();
 	}
 
-	splitPoint_ = sum / static_cast<double>(bodiesInRegion_.size());
+	splitPoint_ = sum / static_cast<float>(bodiesInRegion_.size());
 
 	//Make the new regions
 	//Find the points that belong in them
@@ -145,11 +145,11 @@ std::unordered_set<int> SpacePartionning::RegionNode::FindSubregionsForBody(cons
 	intersectingRegions.emplace(baseRegion);
 
 	//Find all the regions the body crosses over in with it's radius
-	if (const double distance = rbPtr->GetPos().X - splitPoint_.X;  std::abs(distance) < rbPtr->GetCollider()->GetBoundingCircleRad())
+	if (const float distance = rbPtr->GetPos().X - splitPoint_.X;  std::abs(distance) < rbPtr->GetCollider()->GetBoundingCircleRad())
 	{
 		intersectingRegions.emplace((baseRegion + 2) % 4);
 	}
-	if (const double distance = rbPtr->GetPos().Y - splitPoint_.Y;  std::abs(distance) < rbPtr->GetCollider()->GetBoundingCircleRad())
+	if (const float distance = rbPtr->GetPos().Y - splitPoint_.Y;  std::abs(distance) < rbPtr->GetCollider()->GetBoundingCircleRad())
 	{
 		intersectingRegions.emplace((baseRegion + 1) % 2 + (baseRegion > 1 ? 2: 0));
 	}

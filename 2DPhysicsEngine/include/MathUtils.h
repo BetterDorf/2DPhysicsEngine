@@ -2,13 +2,13 @@
 
 namespace mathUtils
 {
-	static double epsilon = 0.001;
-	static double pi = 3.14159265358979323846264;
+	static float epsilon = 0.001;
+	static float pi = 3.14159265358979323846264;
 
-	bool isApproximatelyEqual(double a, double b);
+	bool isApproximatelyEqual(float a, float b);
 
-	double radToDeg(double rad);
-	double degToRad(double deg);
+	float radToDeg(float rad);
+	float degToRad(float deg);
 
-	double signnum_c(double x);
+	float signnum_c(float x);
 }
